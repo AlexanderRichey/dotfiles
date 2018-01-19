@@ -59,6 +59,7 @@ au VimEnter *  NERDTree
 nnoremap C :bp\|bd #<CR>
 
 let NERDTreeIgnore = ['\.pyc$', 'env', 'node_modules']
+let NERDTreeShowHidden = 1
 
 " Set 4 space tab for python
 autocmd Filetype python setlocal ts=4 sw=4 sts=0 expandtab
