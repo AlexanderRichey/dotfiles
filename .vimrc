@@ -28,18 +28,17 @@ Plugin 'VundleVim/Vundle.vim'
 
 " Plugins
 Plugin 'tpope/vim-fugitive'
+Plugin 'kien/ctrlp.vim'
 Plugin 'scrooloose/nerdtree'
-Plugin 'scrooloose/syntastic'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'tpope/vim-surround'
-Plugin 'kien/ctrlp.vim'
 Plugin 'bling/vim-airline'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'pangloss/vim-javascript'
 Plugin 'chemzqm/vim-jsx-improve'
-Plugin 'nvie/vim-flake8'
 Plugin 'valloric/youcompleteme'
-
+Plugin 'w0rp/ale'
+Plugin 'junegunn/fzf'
 
 " Colors
 Plugin 'rakr/vim-one'
@@ -50,7 +49,8 @@ call vundle#end()            " required
 filetype plugin indent on    " required
 
 syntax on
-colorscheme onedark
+colorscheme one
+set background=dark
 
 " Open NERDTree on enter
 au VimEnter *  NERDTree
@@ -65,4 +65,5 @@ let NERDTreeShowHidden = 1
 autocmd Filetype python setlocal ts=4 sw=4 sts=0 expandtab
 
 let g:pymode_doc = 0
-
+let g:ale_use_deprecated_neovim = 1
+let g:ale_linters = {'javascript': ['standard'], 'python': ['pycodestyle']}
