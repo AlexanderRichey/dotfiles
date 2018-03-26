@@ -39,6 +39,7 @@ Plugin 'chemzqm/vim-jsx-improve'
 Plugin 'valloric/youcompleteme'
 Plugin 'w0rp/ale'
 Plugin 'junegunn/fzf'
+Plugin 'christoomey/vim-tmux-navigator'
 
 " Colors
 Plugin 'rakr/vim-one'
@@ -66,4 +67,4 @@ autocmd Filetype python setlocal ts=4 sw=4 sts=0 expandtab
 
 let g:pymode_doc = 0
 let g:ale_use_deprecated_neovim = 1
-let g:ale_linters = {'javascript': ['standard'], 'python': ['pycodestyle']}
+let g:ale_linters = {'javascript': ['standard'], 'python': ['pycodestyle --max-line-length 90']}
