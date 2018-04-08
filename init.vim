@@ -52,7 +52,7 @@ let g:one_allow_italics = 1
 """"""" Python config """"""
 syntax enable
 set number showmatch
-set shiftwidth=4 tabstop=4 softtabstop=4 expandtab autoindent
+autocmd Filetype python setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab autoindent
 let python_highlight_all = 1
 set completeopt=menu " disable documentation opening up spontaneously
 
