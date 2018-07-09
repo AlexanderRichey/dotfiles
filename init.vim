@@ -12,6 +12,8 @@ call plug#begin('~/.config/nvim/plugged')
 Plug 'christoomey/vim-tmux-navigator'
 " Autocompletion
 Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+" Airline
+Plug 'vim-airline/vim-airline'
 " Tree file browser
 Plug 'tpope/vim-vinegar'
 " ag search
@@ -25,6 +27,8 @@ Plug 'pangloss/vim-javascript'
 Plug 'chemzqm/vim-jsx-improve'
 " Linting
 Plug 'w0rp/ale'
+" Comments
+Plug 'tpope/vim-commentary'
 " Colors
 Plug 'rakr/vim-one'
 
