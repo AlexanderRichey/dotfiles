@@ -29,6 +29,8 @@ Plug 'chemzqm/vim-jsx-improve'
 Plug 'w0rp/ale'
 " Comments
 Plug 'tpope/vim-commentary'
+" Git
+Plug 'airblade/vim-gitgutter'
 " Colors
 Plug 'rakr/vim-one'
 
