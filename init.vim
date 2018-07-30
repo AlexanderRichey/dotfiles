@@ -3,6 +3,7 @@ call plug#begin('~/.config/nvim/plugged')
 
 " Tmux support
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'tmux-plugins/vim-tmux-focus-events'
 " Autocompletion
 Plug 'Valloric/YouCompleteMe'
 " Airline
