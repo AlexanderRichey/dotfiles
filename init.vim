@@ -1,17 +1,10 @@
 """"""" Plugin management stuff """""""
-" vim-plug hook functions
-function! BuildYCM(info)
-  if a:info.status == 'installed' || a:info.force
-    !./install.sh
-  endif
-endfunction
-
 call plug#begin('~/.config/nvim/plugged')
 
 " Tmux support
 Plug 'christoomey/vim-tmux-navigator'
 " Autocompletion
-Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+Plug 'Valloric/YouCompleteMe'
 " Airline
 Plug 'vim-airline/vim-airline'
 " Tree file browser
@@ -32,11 +25,15 @@ Plug 'tpope/vim-commentary'
 " Git
 Plug 'airblade/vim-gitgutter'
 " Colors
-Plug 'rakr/vim-one'
+Plug 'joshdick/onedark.vim'
+" Prose mode
+Plug 'reedes/vim-pencil'
 
 call plug#end()
 
 """"""" General config """""
+syntax enable
+syntax on
 set expandtab " use softtabs
 set number " show line numbers
 set relativenumber " show relative line numbers
@@ -48,16 +45,17 @@ set nofoldenable
 set shiftwidth=2
 set softtabstop=2
 set tabstop=2
+set number showmatch
+set autoread
 
 """"""" Theme """"""""""""""
 set termguicolors
-colorscheme one
-set background=dark
-let g:one_allow_italics = 1
+let g:onedark_termcolors=256
+let g:airline_theme='onedark'
+colorscheme onedark
+call onedark#set_highlight("Normal", { "fg": { "gui": "#ABB2BF", "cterm": "145", "cterm16" : "7" } })
 
 """"""" Python config """"""
-syntax enable
-set number showmatch
 autocmd Filetype python setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab autoindent
 let python_highlight_all = 1
 set completeopt=menu " disable documentation opening up spontaneously
@@ -65,8 +63,3 @@ set completeopt=menu " disable documentation opening up spontaneously
 """"""" ALE config """"""""""
 let g:ale_use_deprecated_neovim = 1
 let g:ale_linters = {'javascript': ['standard'], 'python': ['pycodestyle --max-line-length 90']}
-
-""""""" NERDTree config """"
-nnoremap C :bp\|bd #<CR>
-let NERDTreeIgnore = ['\.pyc$', 'env', 'node_modules']
-let NERDTreeShowHidden = 1
