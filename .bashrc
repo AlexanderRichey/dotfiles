@@ -151,3 +151,6 @@ bind "set show-all-if-ambiguous on"
 if [ -f ~/.path_adjustments ]; then
     . ~/.path_adjustments
 fi
+
+# added by travis gem
+[ -f /home/alex/.travis/travis.sh ] && source /home/alex/.travis/travis.sh
