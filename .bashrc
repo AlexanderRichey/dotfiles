@@ -152,6 +152,12 @@ if [ -f ~/.path_adjustments ]; then
     . ~/.path_adjustments
 fi
 
+# Source local exports
 if [ -f ~/.exports ]; then
     . ~/.exports
+fi
+
+# Added by travis gem
+if [ -f /home/alex/.travis/travis.sh ]; then
+  source /home/alex/.travis/travis.sh
 fi
