@@ -19,6 +19,7 @@ Plug 'terryma/vim-multiple-cursors'
 " Javascrip + React
 Plug 'pangloss/vim-javascript'
 Plug 'chemzqm/vim-jsx-improve'
+Plug 'hashivim/vim-terraform'
 " Linting
 Plug 'w0rp/ale'
 " Comments
