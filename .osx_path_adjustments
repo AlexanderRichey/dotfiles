@@ -9,3 +9,7 @@ export NVM_DIR="$HOME/.nvm"
 if [ -f ~/git-completion.bash ]; then
   source ~/git-completion.bash
 fi
+
+if [ -d /Users/alex/Library/Python/3.7/bin ]; then
+  export PATH=$PATH:/Users/alex/Library/Python/3.7/bin
+fi

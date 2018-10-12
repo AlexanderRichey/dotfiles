@@ -57,11 +57,15 @@ let g:airline_theme='onedark'
 colorscheme onedark
 call onedark#set_highlight("Normal", { "fg": { "gui": "#ABB2BF", "cterm": "145", "cterm16" : "7" } })
 
+""""""" ALE config """"""""""
+" let g:ale_use_deprecated_neovim = 1
+let g:ale_enabled=1
+let g:ale_linters = {
+\  'javascript': ['standard'],
+\  'python': ['pycodestyle', 'black'],
+\}
+
 """"""" Python config """"""
 autocmd Filetype python setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab autoindent
 let python_highlight_all = 1
 set completeopt=menu " disable documentation opening up spontaneously
-
-""""""" ALE config """"""""""
-let g:ale_use_deprecated_neovim = 1
-let g:ale_linters = {'javascript': ['standard'], 'python': ['pycodestyle --max-line-length 90']}
