@@ -22,6 +22,7 @@ Plug 'chemzqm/vim-jsx-improve'
 Plug 'hashivim/vim-terraform'
 " Linting
 Plug 'w0rp/ale'
+Plug 'ambv/black'
 " Comments
 Plug 'tpope/vim-commentary'
 " Git
@@ -62,10 +63,11 @@ call onedark#set_highlight("Normal", { "fg": { "gui": "#ABB2BF", "cterm": "145",
 let g:ale_enabled=1
 let g:ale_linters = {
 \  'javascript': ['standard'],
-\  'python': ['pycodestyle', 'black'],
+\  'python': ['pycodestyle --max-line-length 90', 'black'],
 \}
 
 """"""" Python config """"""
 autocmd Filetype python setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab autoindent
 let python_highlight_all = 1
 set completeopt=menu " disable documentation opening up spontaneously
+autocmd BufWritePre *.py execute ':Black'
