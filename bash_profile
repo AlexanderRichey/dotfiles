@@ -102,7 +102,6 @@ if [[ $(uname) == "Darwin" ]]; then
   alias vim=/usr/local/bin/vim
 
   eval "$(rbenv init -)"
-  export PATH="$HOME/.rbenv/bin:$PATH"
 fi
 
 
