@@ -129,3 +129,12 @@ export VISUAL=vi
 
 alias co='cd ~/Code'
 alias dt='cd ~/Desktop'
+
+
+###
+# Exports
+###
+
+if [ -f ~/.exports ]; then
+  . ~/.exports
+fi
