@@ -16,7 +16,7 @@
 
 [core]
     whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
-    editor=nvim
+    editor=/usr/local/bin/vim
 [user]
     name = Alexander Richey
     email = alexander.richey@gmail.com
