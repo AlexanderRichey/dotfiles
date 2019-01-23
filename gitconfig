@@ -16,7 +16,7 @@
 
 [core]
     whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
-    editor=nano
+    editor=vim
 [user]
 	name = Alexander Richey
 	email = alrichey@amazon.com
