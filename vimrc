@@ -78,8 +78,13 @@ tnoremap <Esc> <C-\><C-n>
 """"""" ALE config """"""""""
 let g:ale_enabled=1
 let g:ale_linters = {
-\  'javascript': ['standard'],
+\  'javascript': ['prettier'],
 \  'python': ['black'],
+\}
+
+let g:ale_fix_on_save=1
+let g:ale_fixers = {
+\  'javascript': ['prettier'],
 \}
 
 """"""" Python config """"""
