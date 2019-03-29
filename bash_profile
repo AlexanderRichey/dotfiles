@@ -89,6 +89,20 @@ if [[ $(uname) == "Darwin" ]]; then
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 fi
 
+###
+# GCloud Setup
+###
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/alrichey/Code/google-cloud-sdk/path.bash.inc' ]; then
+  . '/Users/alrichey/Code/google-cloud-sdk/path.bash.inc'
+fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/alrichey/Code/google-cloud-sdk/completion.bash.inc' ]; then
+  . '/Users/alrichey/Code/google-cloud-sdk/completion.bash.inc'
+fi
+
 
 ###
 # Mac Configurations

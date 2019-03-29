@@ -16,10 +16,13 @@ Plug 'rking/ag.vim'
 Plug 'kien/ctrlp.vim'
 " Multicursor
 Plug 'terryma/vim-multiple-cursors'
-" Javascrip + React
+" Languages
 Plug 'pangloss/vim-javascript'
 Plug 'chemzqm/vim-jsx-improve'
 Plug 'hashivim/vim-terraform'
+" Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+" Surrond
+Plug 'tpope/vim-surround'
 " Linting
 Plug 'w0rp/ale'
 Plug 'ambv/black'
@@ -92,3 +95,6 @@ autocmd Filetype python setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab 
 let python_highlight_all = 1
 set completeopt=menu " disable documentation opening up spontaneously
 autocmd BufWritePre *.py execute ':Black'
+
+""""""" Go config """"""""""
+autocmd Filetype go setlocal shiftwidth=4 tabstop=4 noexpandtab autoindent
