@@ -1,100 +1,125 @@
-""""""" Plugin management stuff """""""
+" Configuration file for vim
+" author: AlexanderRichey (alrichey@)
+
+" Vim-Plug
 call plug#begin('~/.vim/plugged')
-
-" Tmux support
-Plug 'christoomey/vim-tmux-navigator'
-" Plug 'tmux-plugins/vim-tmux-focus-events'
-" Autocompletion
-Plug 'Valloric/YouCompleteMe'
-" Airline
-Plug 'vim-airline/vim-airline'
-" Tree file browser
-Plug 'tpope/vim-vinegar'
-" ag search
-Plug 'rking/ag.vim'
-" Fuzzy finder
-Plug 'kien/ctrlp.vim'
-" Multicursor
-Plug 'terryma/vim-multiple-cursors'
-" Languages
-Plug 'pangloss/vim-javascript'
-Plug 'chemzqm/vim-jsx-improve'
-Plug 'hashivim/vim-terraform'
-" Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-" Surrond
-Plug 'tpope/vim-surround'
-" Linting
-Plug 'w0rp/ale'
-Plug 'ambv/black'
-" Comments
-Plug 'tpope/vim-commentary'
-" Git
-Plug 'airblade/vim-gitgutter'
-" Colors
-Plug 'joshdick/onedark.vim'
-Plug 'rakr/vim-one'
-" Prose mode
-Plug 'reedes/vim-pencil'
-
+  Plug 'christoomey/vim-tmux-navigator'                      " Tmux support
+  " Plug 'Valloric/YouCompleteMe'                            " Autocompletion
+  Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}} " Autocompletion
+  Plug 'vim-airline/vim-airline'                             " Airline
+  Plug 'tpope/vim-vinegar'                                   " File browser
+  Plug 'tpope/vim-commentary'                                " Comment in/out code
+  Plug 'rking/ag.vim'                                        " Better search with :Ag
+  Plug 'kien/ctrlp.vim'                                      " Fuzzy finder
+  Plug 'terryma/vim-multiple-cursors'                        " Multicursor
+  Plug 'airblade/vim-gitgutter'                              " Show git diff
+  Plug 'reedes/vim-pencil'                                   " Prose mode
+  " Languages
+  Plug 'pangloss/vim-javascript'
+  Plug 'chemzqm/vim-jsx-improve'
+  Plug 'hashivim/vim-terraform'
+  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+  " Linting
+  Plug 'w0rp/ale'
+  Plug 'ambv/black'
+  " Themes
+  Plug 'joshdick/onedark.vim'
 call plug#end()
 
-""""""" General config """""
-syntax enable
-syntax on
-set expandtab " use softtabs
-set number " show line numbers
-set relativenumber " show relative line numbers
-set showmatch " highlight matching parenthesis
-set cursorline " highlight current line
-set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*
-set noswapfile
-set nofoldenable
-set shiftwidth=2
-set softtabstop=2
-set tabstop=2
-set number showmatch
-set autoread
-set backspace=indent,eol,start
+" Standard vim options
+set nocompatible             " use vim instead of vi defaults
+set autoindent               " copy indents when starting new lines
+set expandtab                " softabs
+set tabstop=2                " tab width is 2 spaces by default
+set shiftwidth=2             " autoindent with 2 spaces
+set number                   " show line numbers
+set relativenumber           " show relative line numbers
+set number showmatch         " highlight current line number
+set showmatch                " highlight matching parenthesis
+set cursorline               " highlight current line
+set scrolloff=1              " always show one line around the cursor
+set nofen                    " disable folds
+set autoread                 " auto reload files changed outside of vim
+set backspace=2              " allow backspacing over everything in insert mode
+set notimeout                " do not wait for key combos
+set noswapfile               " disable swapfile
+set completeopt=menu         " disable documentation opening up spontaneously
 
-""""""" Theme """"""""""""""
+" Wild
+set wildmenu                   " enhance command line completion
+set wildmode=list:longest,full " list all options, match to the longest
+set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
 
-" onedark.vim override: Don't set a background color when running in a terminal;
-" just use the terminal's background color
-" `gui` is the hex color code used in GUI mode/nvim true-color mode
-" `cterm` is the color code used in 256-color mode
-" `cterm16` is the color code used in 16-color mode
-if (has("autocmd") && !has("gui_running"))
-  augroup colorset
-    autocmd!
-    let s:white = { "gui": "#ABB2BF", "cterm": "145", "cterm16" : "7" }
-    autocmd ColorScheme * call onedark#set_highlight("Normal", { "fg": s:white }) " `bg` will not be styled since there is no `bg` setting
-  augroup END
-  highlight CursorLine ctermbg=235
-endif
+" Theming
+  "turn on syntax highlighting
+  syntax on
 
-colorscheme onedark
+  " onedark.vim override: Don't set a background color when running in a terminal;
+  " just use the terminal's background color
+  " `gui` is the hex color code used in GUI mode/nvim true-color mode
+  " `cterm` is the color code used in 256-color mode
+  " `cterm16` is the color code used in 16-color mode
+  if (has("autocmd") && !has("gui_running"))
+    augroup colorset
+      autocmd!
+      let s:white = { "gui": "#ABB2BF", "cterm": "145", "cterm16" : "7" }
+      " `bg` will not be styled since there is no `bg` setting
+      autocmd ColorScheme * call onedark#set_highlight("Normal", { "fg": s:white }) 
+    augroup END
+    highlight CursorLine ctermbg=235
+  endif
 
-""""""" :terminal config """"
-let &shell='/bin/bash --login'
-tnoremap <Esc> <C-\><C-n>
+  " set the theme
+  colorscheme onedark
 
-""""""" ALE config """"""""""
-let g:ale_enabled=1
-let g:ale_linters = {
-\  'javascript': ['prettier'],
-\  'python': ['black'],
-\}
+" Terminal
+  " set default command
+  let &shell='/bin/bash --login'
+  " esc works in term pane
+  tnoremap <Esc> <C-\><C-n>
 
-let g:ale_fix_on_save=1
-let g:ale_fixers = {
-\  'javascript': ['prettier'],
-\}
+" Plugin configurations
+  " ale
+    " lint
+    let g:ale_enabled=1
+    let g:ale_linters = {
+    \  'javascript': ['prettier'],
+    \  'python': ['black'],
+    \}
+    " fix
+    let g:ale_fix_on_save=1
+    let g:ale_fixers = {
+    \  'javascript': ['prettier'],
+    \}
 
-""""""" Python config """"""
-autocmd Filetype python setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab autoindent
-let python_highlight_all = 1
-set completeopt=menu " disable documentation opening up spontaneously
-autocmd BufWritePre *.py execute ':Black'
+  " coc autocomplete
+    " use <tab> for trigger completion and navigate to next complete item
+    function! s:check_back_space() abort
+      let col = col('.') - 1
+      return !col || getline('.')[col - 1]  =~ '\s'
+    endfunction
 
-""""""" Go config """"""""""
-autocmd Filetype go setlocal shiftwidth=4 tabstop=4 noexpandtab autoindent
+    inoremap <silent><expr> <TAB>
+          \ pumvisible() ? "\<C-n>" :
+          \ <SID>check_back_space() ? "\<TAB>" :
+          \ coc#refresh()
+
+" Language overrides
+  " python
+    " use 4 spaces
+    autocmd Filetype python setlocal 
+      \ shiftwidth=4 
+      \ tabstop=4 
+      \ softtabstop=4 
+      \ expandtab 
+      \ autoindent
+    " Run black after every save
+    autocmd BufWritePre *.py execute ':Black'
+
+  " go
+    " use tabs
+    autocmd Filetype go setlocal 
+      \ shiftwidth=4
+      \ tabstop=4 
+      \ noexpandtab 
+      \ autoindent
