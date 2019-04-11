@@ -3,25 +3,24 @@
 
 " Vim-Plug
 call plug#begin('~/.vim/plugged')
-  Plug 'christoomey/vim-tmux-navigator'                      " Tmux support
-  " Plug 'Valloric/YouCompleteMe'                            " Autocompletion
-  Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}} " Autocompletion
-  Plug 'vim-airline/vim-airline'                             " Airline
+  Plug 'christoomey/vim-tmux-navigator'                      " tmux support
+  Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}} " autocompletion
+  Plug 'itchyny/lightline.vim'                               " info line
   Plug 'tpope/vim-vinegar'                                   " File browser
-  Plug 'tpope/vim-commentary'                                " Comment in/out code
-  Plug 'rking/ag.vim'                                        " Better search with :Ag
-  Plug 'kien/ctrlp.vim'                                      " Fuzzy finder
-  Plug 'terryma/vim-multiple-cursors'                        " Multicursor
-  Plug 'airblade/vim-gitgutter'                              " Show git diff
-  Plug 'reedes/vim-pencil'                                   " Prose mode
+  Plug 'tpope/vim-commentary'                                " comment in/out code
+  Plug 'rking/ag.vim'                                        " better search with :Ag
+  Plug 'kien/ctrlp.vim'                                      " fuzzy finder
+  Plug 'terryma/vim-multiple-cursors'                        " multicursor
+  Plug 'mhinz/vim-signify'                                   " show git diff
+  Plug 'reedes/vim-pencil'                                   " prose mode
   " Languages
-  Plug 'pangloss/vim-javascript'
-  Plug 'chemzqm/vim-jsx-improve'
-  Plug 'hashivim/vim-terraform'
-  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+  Plug 'pangloss/vim-javascript'                             " js
+  Plug 'chemzqm/vim-jsx-improve'                             " jsx
+  Plug 'hashivim/vim-terraform'                              " terraform
+  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }         " go
   " Linting
   Plug 'w0rp/ale'
-  Plug 'ambv/black'
+  " Plug 'ambv/black'                                        " slows start time
   " Themes
   Plug 'joshdick/onedark.vim'
 call plug#end()
