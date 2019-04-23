@@ -1,18 +1,19 @@
-" Configuration file for vim
+" Configuration file for vim & nvim
 " author: AlexanderRichey (alrichey@)
 
 " Vim-Plug
 call plug#begin('~/.vim/plugged')
   Plug 'christoomey/vim-tmux-navigator'                      " tmux support
-  Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}} " autocompletion
+  Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}} " autocompletion & linting
   Plug 'itchyny/lightline.vim'                               " info line
-  Plug 'tpope/vim-vinegar'                                   " File browser
+  Plug 'tpope/vim-vinegar'                                   " file browser
   Plug 'tpope/vim-commentary'                                " comment in/out code
   Plug 'rking/ag.vim'                                        " better search with :Ag
   Plug 'kien/ctrlp.vim'                                      " fuzzy finder
   Plug 'terryma/vim-multiple-cursors'                        " multicursor
   Plug 'mhinz/vim-signify'                                   " show git diff
   Plug 'reedes/vim-pencil'                                   " prose mode
+  Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  } " md preview
   " Languages
   Plug 'pangloss/vim-javascript'                             " js
   Plug 'chemzqm/vim-jsx-improve'                             " jsx
@@ -65,7 +66,7 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
       " `bg` will not be styled since there is no `bg` setting
       autocmd ColorScheme * call onedark#set_highlight("Normal", { "fg": s:white }) 
     augroup END
-    highlight CursorLine ctermbg=235
+    " highlight CursorLine ctermbg=235
   endif
 
   " set the theme
@@ -84,12 +85,18 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
     let g:ale_linters = {
     \  'javascript': ['prettier'],
     \  'python': ['black'],
+    \  'html': ['prettier'],
+    \  'go': ['golint'],
     \}
     " fix
     let g:ale_fix_on_save=1
     let g:ale_fixers = {
     \  'javascript': ['prettier'],
+    \  'html': ['prettier'],
+    \  'go': ['gofmt'],
     \}
+    " complete
+    let g:ale_completion_enabled = 0 " use coc instead
 
   " coc autocomplete
     " use <tab> for trigger completion and navigate to next complete item

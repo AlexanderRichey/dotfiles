@@ -143,6 +143,8 @@ export VISUAL=vi
 
 alias co='cd ~/Code'
 alias dt='cd ~/Desktop'
+alias vi='nvim'
+alias vim='nvim'
 
 
 ###
