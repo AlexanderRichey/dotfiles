@@ -14,14 +14,17 @@ call plug#begin('~/.vim/plugged')
   Plug 'mhinz/vim-signify'                                   " show git diff
   Plug 'reedes/vim-pencil'                                   " prose mode
   Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  } " md preview
+  Plug 'jiangmiao/auto-pairs'                                " auto close braces
+  Plug 'alvan/vim-closetag'                                  " auto close html tags
   " Languages
   Plug 'pangloss/vim-javascript'                             " js
-  Plug 'chemzqm/vim-jsx-improve'                             " jsx
+  " Plug 'chemzqm/vim-jsx-improve'                             " jsx
+  Plug 'mxw/vim-jsx'
   Plug 'hashivim/vim-terraform'                              " terraform
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }         " go
   " Linting
   Plug 'w0rp/ale'
-  " Plug 'ambv/black'                                        " slows start time
+  Plug 'ambv/black'                                        " slows start time
   " Themes
   Plug 'joshdick/onedark.vim'
 call plug#end()
@@ -44,6 +47,8 @@ set backspace=2              " allow backspacing over everything in insert mode
 set notimeout                " do not wait for key combos
 set noswapfile               " disable swapfile
 set completeopt=menu         " disable documentation opening up spontaneously
+set path=.,src,src/shared,node_nodules " resolve gf, gd to these dirs
+set suffixesadd=.js,.jsx     " resovle gf, gd to these extensions
 
 " Wild
 set wildmenu                   " enhance command line completion
@@ -84,6 +89,7 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
     let g:ale_enabled=1
     let g:ale_linters = {
     \  'javascript': ['prettier'],
+    \  'javascriptreact': ['prettier'],
     \  'python': ['black'],
     \  'html': ['prettier'],
     \  'go': ['golint'],
@@ -92,6 +98,7 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
     let g:ale_fix_on_save=1
     let g:ale_fixers = {
     \  'javascript': ['prettier'],
+    \  'javascriptreact': ['prettier'],
     \  'html': ['prettier'],
     \  'go': ['gofmt'],
     \}
@@ -109,6 +116,13 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
           \ pumvisible() ? "\<C-n>" :
           \ <SID>check_back_space() ? "\<TAB>" :
           \ coc#refresh()
+
+  " close tags
+  let g:closetag_xhtml_filenames = '*.xhtml,*.jsx'
+  let g:closetag_regions = {
+  \ 'typescript.tsx': 'jsxRegion,tsxRegion',
+  \ 'javascript.jsx': 'jsxRegion',
+  \}
 
 " Language overrides
   " python
