@@ -42,8 +42,10 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 # Ignore Case
 ###
 
-bind "set completion-ignore-case on"
-bind "set show-all-if-ambiguous on"
+if [[ $(uname) == "Darwin" ]]; then
+  bind "set completion-ignore-case on"
+  bind "set show-all-if-ambiguous on"
+fi
 
 
 ###
@@ -124,6 +126,7 @@ fi
 ##
 
 if [[ $(uname) == "Linux" ]]; then
+	color_prompt=yes
   alias pbcopy='xclip -selection clipboard'
   alias pbpaste='xclip -selection clipboard -o'
 fi
@@ -141,6 +144,8 @@ export VISUAL=vi
 # Shortcuts
 ###
 
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
 alias co='cd ~/Code'
 alias dt='cd ~/Desktop'
 alias vi='nvim'
@@ -153,6 +158,21 @@ alias vim='nvim'
 
 if [ -f ~/.exports ]; then
   . ~/.exports
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+# set PATH so it includes go binaries if they exist
+if [ -f /usr/local/go/bin ]; then
+  export PATH=$PATH:/usr/local/go/bin
 fi
 
 

@@ -24,7 +24,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }         " go
   " Linting
   Plug 'w0rp/ale'
-  Plug 'ambv/black'                                        " slows start time
+  " Plug 'psf/black'                                        " slows start time
   " Themes
   Plug 'joshdick/onedark.vim'
 call plug#end()
@@ -119,10 +119,6 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
 
   " close tags
   let g:closetag_xhtml_filenames = '*.xhtml,*.jsx'
-  let g:closetag_regions = {
-  \ 'typescript.tsx': 'jsxRegion,tsxRegion',
-  \ 'javascript.jsx': 'jsxRegion',
-  \}
 
 " Language overrides
   " python
@@ -134,7 +130,7 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
       \ expandtab 
       \ autoindent
     " Run black after every save
-    autocmd BufWritePre *.py execute ':Black'
+    " autocmd BufWritePre *.py execute ':Black'
 
   " go
     " use tabs
