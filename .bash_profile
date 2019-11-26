@@ -129,6 +129,9 @@ if [[ $(uname) == "Linux" ]]; then
 	color_prompt=yes
   alias pbcopy='xclip -selection clipboard'
   alias pbpaste='xclip -selection clipboard -o'
+
+  alias ls='ls --color=auto'
+  alias grep='grep --color=auto'
 fi
 
 
@@ -139,13 +142,14 @@ fi
 export EDITOR=vi
 export VISUAL=vi
 
+# Vi mode in bash
+# set -o vi
+
 
 ###
 # Shortcuts
 ###
 
-alias ls='ls --color=auto'
-alias grep='grep --color=auto'
 alias co='cd ~/Code'
 alias dt='cd ~/Desktop'
 alias vi='nvim'
@@ -162,17 +166,22 @@ fi
 
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
+  PATH="$HOME/bin:$PATH"
 fi
 
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/.local/bin" ] ; then
-    PATH="$HOME/.local/bin:$PATH"
+  PATH="$HOME/.local/bin:$PATH"
 fi
 
 # set PATH so it includes go binaries if they exist
 if [ -f /usr/local/go/bin ]; then
-  export PATH=$PATH:/usr/local/go/bin
+  PATH=$PATH:/usr/local/go/bin
+fi
+
+# set PATH so it includes user's private go binaries if they exist
+if [ -d "$HOME/go/bin" ]; then
+  PATH="$HOME/go/bin:$PATH"
 fi
 
 

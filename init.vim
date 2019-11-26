@@ -4,7 +4,7 @@
 " Vim-Plug
 call plug#begin('~/.vim/plugged')
   Plug 'christoomey/vim-tmux-navigator'                      " tmux support
-  Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}} " autocompletion & linting
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}            " autocompletion & linting
   Plug 'itchyny/lightline.vim'                               " info line
   Plug 'tpope/vim-vinegar'                                   " file browser
   Plug 'tpope/vim-commentary'                                " comment in/out code
@@ -14,17 +14,11 @@ call plug#begin('~/.vim/plugged')
   Plug 'mhinz/vim-signify'                                   " show git diff
   Plug 'reedes/vim-pencil'                                   " prose mode
   Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  } " md preview
-  Plug 'jiangmiao/auto-pairs'                                " auto close braces
-  Plug 'alvan/vim-closetag'                                  " auto close html tags
   " Languages
-  Plug 'pangloss/vim-javascript'                             " js
-  " Plug 'chemzqm/vim-jsx-improve'                             " jsx
-  Plug 'mxw/vim-jsx'
-  Plug 'hashivim/vim-terraform'                              " terraform
-  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }         " go
+  Plug 'sheerun/vim-polyglot'
   " Linting
   Plug 'w0rp/ale'
-  " Plug 'psf/black'                                        " slows start time
+  Plug 'psf/black'                                        " slows start time
   " Themes
   Plug 'joshdick/onedark.vim'
 call plug#end()
@@ -46,6 +40,8 @@ set autoread                 " auto reload files changed outside of vim
 set backspace=2              " allow backspacing over everything in insert mode
 set notimeout                " do not wait for key combos
 set noswapfile               " disable swapfile
+set cmdheight=2              " better display for messages
+set signcolumn=yes           " always show signcolumns
 set completeopt=menu         " disable documentation opening up spontaneously
 set path=.,src,src/shared,node_nodules " resolve gf, gd to these dirs
 set suffixesadd=.js,.jsx     " resovle gf, gd to these extensions
@@ -117,9 +113,6 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
           \ <SID>check_back_space() ? "\<TAB>" :
           \ coc#refresh()
 
-  " close tags
-  let g:closetag_xhtml_filenames = '*.xhtml,*.jsx'
-
 " Language overrides
   " python
     " use 4 spaces
@@ -135,7 +128,13 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
   " go
     " use tabs
     autocmd Filetype go setlocal 
-      \ shiftwidth=4
-      \ tabstop=4 
+      \ shiftwidth=6
+      \ tabstop=6
       \ noexpandtab 
       \ autoindent
+    " pretty colors
+    let g:go_highlight_structs = 1
+    let g:go_highlight_methods = 1
+    let g:go_highlight_functions = 1
+    let g:go_highlight_operators = 1
+    let g:go_highlight_build_constraints = 1
