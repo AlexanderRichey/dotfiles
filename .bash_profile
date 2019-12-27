@@ -175,7 +175,7 @@ if [ -d "$HOME/.local/bin" ] ; then
 fi
 
 # set PATH so it includes go binaries if they exist
-if [ -f /usr/local/go/bin ]; then
+if [ -d /usr/local/go/bin ]; then
   PATH=$PATH:/usr/local/go/bin
 fi
 

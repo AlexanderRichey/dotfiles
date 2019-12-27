@@ -40,7 +40,6 @@ set autoread                 " auto reload files changed outside of vim
 set backspace=2              " allow backspacing over everything in insert mode
 set notimeout                " do not wait for key combos
 set noswapfile               " disable swapfile
-set cmdheight=2              " better display for messages
 set signcolumn=yes           " always show signcolumns
 set completeopt=menu         " disable documentation opening up spontaneously
 set path=.,src,src/shared,node_nodules " resolve gf, gd to these dirs
