@@ -14,8 +14,10 @@ call plug#begin('~/.vim/plugged')
   Plug 'mhinz/vim-signify'                                   " show git diff
   Plug 'reedes/vim-pencil'                                   " prose mode
   Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  } " md preview
+  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }        " fzf
   " Languages
   Plug 'sheerun/vim-polyglot'
+  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
   " Linting
   Plug 'w0rp/ale'
   Plug 'psf/black'                                        " slows start time
@@ -95,6 +97,7 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
     \  'javascript': ['prettier'],
     \  'javascriptreact': ['prettier'],
     \  'html': ['prettier'],
+    \  'json': ['prettier'],
     \  'go': ['gofmt'],
     \}
     " complete

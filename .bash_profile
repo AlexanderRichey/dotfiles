@@ -81,28 +81,21 @@ fi
 
 export NVM_DIR="$HOME/.nvm"
 
-if [[ $(uname) == "Linux" ]]; then
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-fi
-
-if [[ $(uname) == "Darwin" ]]; then
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-fi
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 ###
 # GCloud Setup
 ###
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/alrichey/Code/google-cloud-sdk/path.bash.inc' ]; then
-  . '/Users/alrichey/Code/google-cloud-sdk/path.bash.inc'
+if [ -f "$HOME/Code/google-cloud-sdk/path.bash.inc" ]; then
+  . "$HOME/Code/google-cloud-sdk/path.bash.inc"
 fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/alrichey/Code/google-cloud-sdk/completion.bash.inc' ]; then
-  . '/Users/alrichey/Code/google-cloud-sdk/completion.bash.inc'
+if [ -f "$HOME/Code/google-cloud-sdk/completion.bash.inc" ]; then
+  . "$HOME/Code/google-cloud-sdk/completion.bash.inc"
 fi
 
 
@@ -114,9 +107,6 @@ if [[ $(uname) == "Darwin" ]]; then
   export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
   export CLICOLOR=1
 
-  alias vi=/usr/local/bin/vim
-  alias vim=/usr/local/bin/vim
-
   eval "$(rbenv init -)"
 fi
 
@@ -127,6 +117,7 @@ fi
 
 if [[ $(uname) == "Linux" ]]; then
 	color_prompt=yes
+
   alias pbcopy='xclip -selection clipboard'
   alias pbpaste='xclip -selection clipboard -o'
 
@@ -143,7 +134,7 @@ export EDITOR=vi
 export VISUAL=vi
 
 # Vi mode in bash
-# set -o vi
+set -o vi
 
 
 ###
