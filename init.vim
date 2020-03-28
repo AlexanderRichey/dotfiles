@@ -20,7 +20,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
   " Linting
   Plug 'w0rp/ale'
-  Plug 'psf/black'                                        " slows start time
+  " Plug 'psf/black'                                        " slows start time
   " Themes
   Plug 'joshdick/onedark.vim'
 call plug#end()
@@ -98,6 +98,7 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
     \  'javascriptreact': ['prettier'],
     \  'html': ['prettier'],
     \  'json': ['prettier'],
+    \  'yaml': ['prettier'],
     \  'go': ['gofmt'],
     \}
     " complete
