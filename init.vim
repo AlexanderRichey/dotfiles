@@ -16,8 +16,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  } " md preview
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }        " fzf
   " Languages
-  Plug 'sheerun/vim-polyglot'
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+  Plug 'sheerun/vim-polyglot'
   " Linting
   Plug 'w0rp/ale'
   " Plug 'psf/black'                                        " slows start time

@@ -98,6 +98,11 @@ if [ -f "$HOME/Code/google-cloud-sdk/completion.bash.inc" ]; then
   . "$HOME/Code/google-cloud-sdk/completion.bash.inc"
 fi
 
+###
+# FZF
+###
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 ###
 # Mac Configurations
@@ -182,4 +187,5 @@ fi
 
 if [[ $USER == "alrichey" ]]; then
   complete -C /usr/local/aws/bin/aws_completer aws
+  alias bb='brazil-build'
 fi
