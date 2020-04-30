@@ -18,11 +18,11 @@ call plug#begin('~/.vim/plugged')
   " Languages
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
   Plug 'sheerun/vim-polyglot'
+  Plug 'psf/black'
   " Linting
   Plug 'w0rp/ale'
-  " Plug 'psf/black'                                        " slows start time
   " Themes
-  Plug 'joshdick/onedark.vim'
+  Plug 'sjl/badwolf'
 call plug#end()
 
 " Standard vim options
@@ -56,23 +56,15 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
   "turn on syntax highlighting
   syntax on
 
-  " onedark.vim override: Don't set a background color when running in a terminal;
-  " just use the terminal's background color
-  " `gui` is the hex color code used in GUI mode/nvim true-color mode
-  " `cterm` is the color code used in 256-color mode
-  " `cterm16` is the color code used in 16-color mode
-  if (has("autocmd") && !has("gui_running"))
-    augroup colorset
-      autocmd!
-      let s:white = { "gui": "#ABB2BF", "cterm": "145", "cterm16" : "7" }
-      " `bg` will not be styled since there is no `bg` setting
-      autocmd ColorScheme * call onedark#set_highlight("Normal", { "fg": s:white }) 
-    augroup END
-    " highlight CursorLine ctermbg=235
-  endif
-
   " set the theme
-  colorscheme onedark
+  colorscheme badwolf
+
+  " tweaks
+  highlight Normal ctermbg=NONE ctermfg=NONE
+  highlight NonText ctermbg=NONE
+  highlight LineNr ctermbg=NONE
+  highlight SignColumn ctermbg=NONE
+  highlight CursorLineNr cterm=NONE
 
 " Terminal
   " set default command
@@ -89,7 +81,7 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
     \  'javascriptreact': ['prettier'],
     \  'python': ['black'],
     \  'html': ['prettier'],
-    \  'go': ['golint'],
+    \  'go': ['golangci-lint'],
     \}
     " fix
     let g:ale_fix_on_save=1
