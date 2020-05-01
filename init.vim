@@ -18,7 +18,6 @@ call plug#begin('~/.vim/plugged')
   " Languages
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
   Plug 'sheerun/vim-polyglot'
-  Plug 'psf/black'
   " Linting
   Plug 'w0rp/ale'
   " Themes
@@ -36,7 +35,7 @@ set relativenumber           " show relative line numbers
 set number showmatch         " highlight current line number
 set showmatch                " highlight matching parenthesis
 set cursorline               " highlight current line
-set scrolloff=1              " always show one line around the cursor
+set scrolloff=4              " always show one line around the cursor
 set nofen                    " disable folds
 set autoread                 " auto reload files changed outside of vim
 set backspace=2              " allow backspacing over everything in insert mode
@@ -88,6 +87,7 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
     let g:ale_fixers = {
     \  'javascript': ['prettier'],
     \  'javascriptreact': ['prettier'],
+    \  'python': ['black'],
     \  'html': ['prettier'],
     \  'json': ['prettier'],
     \  'yaml': ['prettier'],

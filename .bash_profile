@@ -102,7 +102,9 @@ fi
 # FZF
 ###
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+if [ -f ~/.fzf.bash ]; then
+  source ~/.fzf.bash
+fi
 
 ###
 # Mac Configurations
@@ -111,8 +113,6 @@ fi
 if [[ $(uname) == "Darwin" ]]; then
   export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
   export CLICOLOR=1
-
-  eval "$(rbenv init -)"
 fi
 
 
@@ -148,7 +148,6 @@ set -o vi
 
 alias co='cd ~/Code'
 alias dt='cd ~/Desktop'
-alias vi='nvim'
 alias vim='nvim'
 
 
@@ -185,7 +184,12 @@ fi
 # Work Stuff
 ###
 
+if [ -d "$HOME/.toolbox/bin" ]; then
+  PATH="$HOME/.toolbox/bin:$PATH"
+fi
+
 if [[ $USER == "alrichey" ]]; then
   complete -C /usr/local/aws/bin/aws_completer aws
   alias bb='brazil-build'
+  export GOPROXY=direct
 fi
