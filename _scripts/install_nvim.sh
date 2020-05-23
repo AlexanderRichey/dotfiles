@@ -1,7 +1,7 @@
 set -ex
 
 # Install nvim
-curl -LO https://github.com/neovim/neovim/releases/download/v0.4.2/nvim.appimage
+curl -LO https://github.com/neovim/neovim/releases/download/v0.4.3/nvim.appimage
 chmod u+x nvim.appimage
 sudo mv nvim.appimage /usr/local/bin/nvim
 
