@@ -21,7 +21,7 @@ call plug#begin('~/.vim/plugged')
   " Linting
   Plug 'w0rp/ale'
   " Themes
-  Plug 'sjl/badwolf'
+  Plug 'rakr/vim-one'
 call plug#end()
 
 " Standard vim options
@@ -41,6 +41,7 @@ set autoread                 " auto reload files changed outside of vim
 set backspace=2              " allow backspacing over everything in insert mode
 set notimeout                " do not wait for key combos
 set noswapfile               " disable swapfile
+set belloff=all              " no annoying and pointless bells and flashes
 set signcolumn=yes           " always show signcolumns
 set completeopt=menu         " disable documentation opening up spontaneously
 set path=.,src,src/shared,node_nodules " resolve gf, gd to these dirs
@@ -55,8 +56,16 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
   "turn on syntax highlighting
   syntax on
 
+  " 24-bit Color
+  if (has("termguicolors"))
+    set termguicolors
+  endif
+
   " set the theme
-  colorscheme badwolf
+  colorscheme one
+
+  " one tweaks
+  let g:one_allow_italics=1
 
   " tweaks
   highlight Normal ctermbg=NONE ctermfg=NONE
@@ -88,7 +97,6 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
     \  'javascript': ['prettier'],
     \  'javascriptreact': ['prettier'],
     \  'python': ['black'],
-    \  'html': ['prettier'],
     \  'json': ['prettier'],
     \  'yaml': ['prettier'],
     \  'go': ['gofmt'],
@@ -117,8 +125,6 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
       \ softtabstop=4 
       \ expandtab 
       \ autoindent
-    " Run black after every save
-    " autocmd BufWritePre *.py execute ':Black'
 
   " go
     " use tabs
