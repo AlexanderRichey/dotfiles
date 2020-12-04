@@ -1,3 +1,5 @@
+#!/bin/bash
+
 set -ex
 
 # Check if key already exists

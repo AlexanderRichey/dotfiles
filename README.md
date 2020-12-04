@@ -1,8 +1,29 @@
 # dotfiles
 
-These are my dotfiles. Setup a new computer by doing the following:
+These are my dotfiles.
 
-- Install the languages and docker first using the scripts in `_scripts`
-- Run `install_nvim.sh` which is dependent on the languages being available
-- Run `gen_symlns.sh` to link the dotfiles
-- Open `nvim` and run `:PlugInstall` and `:checkhealth`
+## Setting up a new machine
+
+Create your default SSH key by running `gen_keypair.sh`.
+
+Download [homebrew](https://brew.sh/) and use it to install:
+
+- tmux
+- nvim
+- go
+- python
+- nvm
+- yarn
+
+Install [vim-plug](https://github.com/junegunn/vim-plug).
+
+Link dotfiles. Here's an example:
+
+```
+ln -s ~/dotfiles/.tmux.conf ~/.tmux.conf
+```
+
+Download and import terminal colorschemes.
+
+- [Linux](https://github.com/denysdovhan/one-gnome-terminal)
+- [Mac](https://github.com/nathanbuchar/atom-one-dark-terminal)

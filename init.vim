@@ -22,6 +22,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'w0rp/ale'
   " Themes
   Plug 'rakr/vim-one'
+  Plug 'NovaDev94/lightline-onedark'
 call plug#end()
 
 " Standard vim options
@@ -64,15 +65,14 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
   " set the theme
   colorscheme one
 
-  " one tweaks
+  " tweaks
+  set background=dark
   let g:one_allow_italics=1
 
-  " tweaks
-  highlight Normal ctermbg=NONE ctermfg=NONE
-  highlight NonText ctermbg=NONE
-  highlight LineNr ctermbg=NONE
-  highlight SignColumn ctermbg=NONE
-  highlight CursorLineNr cterm=NONE
+  " lightline
+  let g:lightline = {
+  \ 'colorscheme': 'onedark'
+  \}
 
 " Terminal
   " set default command
