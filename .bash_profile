@@ -40,23 +40,11 @@ alias dt='cd ~/Desktop'
 alias vim='nvim'
 alias del='gio trash'
 
-# Brew
-eval $(/opt/homebrew/bin/brew shellenv)
-
-# Autocomplete
-if type brew &>/dev/null; then
-  HOMEBREW_PREFIX="$(brew --prefix)"
-  if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]; then
-    source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
-  else
-    for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*; do
-      [[ -r "$COMPLETION" ]] && source "$COMPLETION"
-    done
-  fi
-fi
-
 # Mac
 if [[ $(uname) == "Darwin" ]]; then
+  # Brew
+  eval $(/opt/homebrew/bin/brew shellenv)
+
   # Case insensitive autocomplete
   bind "set completion-ignore-case on"
   bind "set show-all-if-ambiguous on"
@@ -71,6 +59,9 @@ fi
 
 # Linux
 if [[ $(uname) == "Linux" ]]; then
+  # Brew
+  eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+
   # Normalize pbcopy/paste
   alias pbcopy='xclip -selection clipboard'
   alias pbpaste='xclip -selection clipboard -o'
@@ -79,6 +70,18 @@ if [[ $(uname) == "Linux" ]]; then
   color_prompt=yes
   alias ls='ls --color=auto'
   alias grep='grep --color=auto'
+fi
+
+# Autocomplete
+if type brew &>/dev/null; then
+  HOMEBREW_PREFIX="$(brew --prefix)"
+  if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]; then
+    source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
+  else
+    for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*; do
+      [[ -r "$COMPLETION" ]] && source "$COMPLETION"
+    done
+  fi
 fi
 
 # Add .local/bin
