@@ -1,25 +1,21 @@
-###
-# Functions
-###
+# Prompt
+parse_git_branch() {
+  BRANCH=$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
 
-function parse_git_branch {
-    BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
-
-    if [ ! "${BRANCH}" == "" ]; then
-        if [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit, working tree clean" ]]
-        then
-          STATUS="\e[0;31m✘"
-        else
-          STATUS="\e[0;32m✔"
-        fi
-
-        printf " ${BRANCH} ${STATUS}"
+  if [[ ! "${BRANCH}" == "" ]]; then
+    if [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit, working tree clean" ]]; then
+      STATUS="\e[0;31m✘"
     else
-        echo ""
+      STATUS="\e[0;32m✔"
     fi
+
+    printf " \e[0;32m${BRANCH} ${STATUS}\e[m"
+  else
+    printf ""
+  fi
 }
 
-function current_venv {
+current_venv() {
   if [[ ! -z "$VIRTUAL_ENV" ]]; then
     # Show this info only if virtualenv is activated:
     local dir=$(basename "$VIRTUAL_ENV")
@@ -28,32 +24,51 @@ function current_venv {
 }
 
 
-###
-# Promp Definition & Configuration
-###
+PS1="\n(\t) \$(current_venv)\[\e[1m\]\w\$(parse_git_branch) \[\033[0;31m\]\n ➜ \[\033[m\]"
 
-PS1="\n(\t) \$(current_venv)\[\e[1m\]\w\[\e[0m\]\[\e[0;32m\]\$(parse_git_branch)\[\e[m\] \[\033[0;31m\]\n ➜ \[\033[m\]"
-
-# Disable the standard venv prompt:
+# Settings
 export VIRTUAL_ENV_DISABLE_PROMPT=1
+export EDITOR=vi
+export VISUAL=vi
 
+# Vi mode in bash
+set -o vi
 
-###
-# Ignore Case
-###
+# Shortcuts
+alias co='cd ~/Code'
+alias dt='cd ~/Desktop'
+alias vim='nvim'
+alias del='gio trash'
 
+# Brew
+eval $(/opt/homebrew/bin/brew shellenv)
+
+# Mac
 if [[ $(uname) == "Darwin" ]]; then
+  # Autocomplete
+  if type brew &>/dev/null; then
+    HOMEBREW_PREFIX="$(brew --prefix)"
+    if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]; then
+      source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
+    else
+      for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*; do
+        [[ -r "$COMPLETION" ]] && source "$COMPLETION"
+      done
+    fi
+  fi
+
+  # Case insensitive autocomplete
   bind "set completion-ignore-case on"
   bind "set show-all-if-ambiguous on"
+
+  # Colors
+  export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
+  export CLICOLOR=1
 fi
 
-
-###
-# Autocomplete
-###
-
-# Standard
+# Linux
 if [[ $(uname) == "Linux" ]]; then
+  # Autocomplete
   if ! shopt -oq posix; then
     if [ -f /usr/share/bash-completion/bash_completion ]; then
       . /usr/share/bash-completion/bash_completion
@@ -61,135 +76,45 @@ if [[ $(uname) == "Linux" ]]; then
       . /etc/bash_completion
     fi
   fi
-fi
 
-if [[ $(uname) == "Darwin" ]]; then
-  if [ -f $(brew --prefix)/etc/bash_completion ]; then
-    . $(brew --prefix)/etc/bash_completion
-  fi
-fi
-
-# Git
-if [ -f ~/.git-completion.bash ]; then
-  . ~/.git-completion.bash
-fi
-
-
-###
-# NVM Setup
-###
-
-export NVM_DIR="$HOME/.nvm"
-
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
-###
-# GCloud Setup
-###
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f "$HOME/Code/google-cloud-sdk/path.bash.inc" ]; then
-  . "$HOME/Code/google-cloud-sdk/path.bash.inc"
-fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f "$HOME/Code/google-cloud-sdk/completion.bash.inc" ]; then
-  . "$HOME/Code/google-cloud-sdk/completion.bash.inc"
-fi
-
-###
-# FZF
-###
-
-if [ -f ~/.fzf.bash ]; then
-  source ~/.fzf.bash
-fi
-
-###
-# Mac Configurations
-###
-
-if [[ $(uname) == "Darwin" ]]; then
-  export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
-  export CLICOLOR=1
-fi
-
-
-###
-# Linux Configurations
-##
-
-if [[ $(uname) == "Linux" ]]; then
-	color_prompt=yes
-
+  # Normalize pbcopy/paste
   alias pbcopy='xclip -selection clipboard'
   alias pbpaste='xclip -selection clipboard -o'
 
+  # Colors
+  color_prompt=yes
   alias ls='ls --color=auto'
   alias grep='grep --color=auto'
 fi
 
-
-###
-# Editor Setting
-###
-
-export EDITOR=vi
-export VISUAL=vi
-
-# Vi mode in bash
-set -o vi
-
-
-###
-# Shortcuts
-###
-
-alias co='cd ~/Code'
-alias dt='cd ~/Desktop'
-alias vim='nvim'
-
-
-###
-# Exports
-###
-
-if [ -f ~/.exports ]; then
-  . ~/.exports
-fi
-
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-  PATH="$HOME/bin:$PATH"
-fi
-
-# set PATH so it includes user's private bin if it exists
+# Add .local/bin
 if [ -d "$HOME/.local/bin" ] ; then
   PATH="$HOME/.local/bin:$PATH"
 fi
 
-# set PATH so it includes go binaries if they exist
-if [ -d /usr/local/go/bin ]; then
-  PATH=$PATH:/usr/local/go/bin
+# Add Go bins
+if [ -d "/usr/local/go/bin" ]; then
+  PATH="/usr/local/go/bin:$PATH"
 fi
 
-# set PATH so it includes user's private go binaries if they exist
+# Add local Go bins
 if [ -d "$HOME/go/bin" ]; then
   PATH="$HOME/go/bin:$PATH"
 fi
 
-
-###
 # Work Stuff
-###
-
-if [ -d "$HOME/.toolbox/bin" ]; then
-  PATH="$HOME/.toolbox/bin:$PATH"
-fi
-
 if [[ $USER == "alrichey" ]]; then
+  # It's okay
+  if [ -d "$HOME/.toolbox/bin" ]; then
+    PATH="$HOME/.toolbox/bin:$PATH"
+  fi
+
+  # AWS Autocomplete
   complete -C /usr/local/aws/bin/aws_completer aws
+
+  # Ugh
   alias bb='brazil-build'
+
+  # Annoying security
   export GOPROXY=direct
 fi
