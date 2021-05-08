@@ -19,3 +19,7 @@
 [user]
 	name = Alexander Richey
 	email = alexander.richey@gmail.com
+[init]
+	defaultBranch = main
+[pull]
+	ff = only

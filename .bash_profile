@@ -84,19 +84,24 @@ if type brew &>/dev/null; then
   fi
 fi
 
-# Add .local/bin
+# Add local bins
 if [ -d "$HOME/.local/bin" ] ; then
   PATH="$HOME/.local/bin:$PATH"
 fi
 
-# Add Go bins
+# Add global go bins
 if [ -d "/usr/local/go/bin" ]; then
   PATH="/usr/local/go/bin:$PATH"
 fi
 
-# Add local Go bins
+# Add local go bins
 if [ -d "$HOME/go/bin" ]; then
   PATH="$HOME/go/bin:$PATH"
+fi
+
+# Add local yarn bins
+if [ -d "$HOME/.yarn/bin" ]; then
+  PATH="$HOME/.yarn/bin:$PATH"
 fi
 
 # Work Stuff
