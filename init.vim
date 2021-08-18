@@ -10,8 +10,10 @@ call plug#begin('~/.vim/plugged')
   Plug 'windwp/nvim-autopairs'                               " autoclose pairs
   Plug 'aserowy/tmux.nvim'                                   " tmux support
   Plug 'neovim/nvim-lspconfig'                               " lsp support
-  Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
   Plug 'hrsh7th/nvim-compe'                                  " autocomplete
+  Plug 'hrsh7th/vim-vsnip'                                   " snippets
+  Plug 'kabouzeid/nvim-lspinstall'                           " install lsps easily
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " supposedly better syntax
   Plug 'hoob3rt/lualine.nvim'                                " info line
   Plug 'rking/ag.vim'                                        " better search with :Ag
   Plug 'kien/ctrlp.vim'                                      " fuzzy finder
@@ -25,7 +27,7 @@ call plug#begin('~/.vim/plugged')
   " Linting
   Plug 'w0rp/ale'
   " Themes
-  Plug 'rakr/vim-one'
+  Plug 'Th3Whit3Wolf/one-nvim'
 call plug#end()
 
 " Standard vim options
@@ -66,11 +68,10 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
   endif
 
   " set the theme
-  colorscheme one
+  colorscheme one-nvim
 
   " tweaks
   set background=dark
-  let g:one_allow_italics=1
 
 " Terminal
   " set default command
@@ -82,7 +83,12 @@ set wildignore=*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,build/
   " lualine
 lua << EOF
 require'lualine'.setup {
-  options = {theme = 'onedark'}
+  options = {
+    theme = 'onedark',
+    icons_enabled = false,
+    component_separators = {'', ''},
+    section_separators = {'', ''},
+  },
 }
 EOF
 
@@ -116,6 +122,11 @@ require "tmux".setup {
       enable_default_keybindings = true,
   }
 }
+EOF
+
+  " lspinstall
+lua << EOF
+require'lspinstall'.setup()
 EOF
 
   " lspconfig
@@ -152,12 +163,12 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
   buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-
 end
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { 'pyright', 'rust_analyzer', 'tsserver', 'gopls' }
+local servers = require'lspinstall'.installed_servers()
+
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     on_attach = on_attach,
@@ -251,6 +262,23 @@ vim.api.nvim_set_keymap('i', '<C-Space>', 'compe#complete()', { expr = true })
 vim.api.nvim_set_keymap('i', '<C-e>', 'compe#close("<C-e>")', { expr = true })
 EOF
 
+  " treesitter
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = {
+    "go",
+    "javascript",
+    "typescript",
+    "python",
+  },
+  highlight = {
+    enable = true,
+    disable = { "vim", "javascript", "javascriptreact", "typescript" },
+    additional_vim_regex_highlighting = false,
+  },
+}
+EOF
+
   " ale
     " lint
     let g:ale_enabled=1
@@ -291,11 +319,3 @@ EOF
       \ tabstop=6
       \ noexpandtab 
       \ autoindent
-    " pretty colors
-    let g:go_highlight_structs = 1
-    let g:go_highlight_methods = 1
-    let g:go_highlight_functions = 1
-    let g:go_highlight_operators = 1
-    let g:go_highlight_build_constraints = 1
-    " vim-go
-    let g:go_code_completion_enabled = 0
