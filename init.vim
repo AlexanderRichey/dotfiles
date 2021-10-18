@@ -16,7 +16,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " supposedly better syntax
   Plug 'hoob3rt/lualine.nvim'                                " info line
   Plug 'rking/ag.vim'                                        " better search with :Ag
-  Plug 'kien/ctrlp.vim'                                      " fuzzy finder
+  Plug 'nvim-telescope/telescope.nvim'                       " fuzzy finder
   Plug 'mg979/vim-visual-multi', {'branch': 'master'}        " multicursor
   Plug 'lewis6991/gitsigns.nvim'                             " show git diff
   Plug 'reedes/vim-pencil'                                   " prose mode
@@ -278,6 +278,15 @@ require'nvim-treesitter.configs'.setup {
 }
 EOF
 
+  " telescope
+lua << EOF
+require('telescope').setup{}
+EOF
+
+" Find files using Telescope command-line sugar.
+nnoremap <c-p> :lua require'telescope.builtin'.find_files{}<CR>
+nnoremap <silent> gr <cmd>lua require'telescope.builtin'.lsp_references{ shorten_path = true }<CR>
+
   " ale
     " lint
     let g:ale_enabled=1
@@ -299,7 +308,7 @@ EOF
     \  'go': ['gofmt'],
     \}
     " complete
-    let g:ale_completion_enabled = 0 " use coc instead
+    let g:ale_completion_enabled = 0 " use compe instead
 
 " Language overrides
   " python
