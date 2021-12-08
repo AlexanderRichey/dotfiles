@@ -10,9 +10,9 @@ call plug#begin('~/.vim/plugged')
   Plug 'windwp/nvim-autopairs'                               " autoclose pairs
   Plug 'aserowy/tmux.nvim'                                   " tmux support
   Plug 'neovim/nvim-lspconfig'                               " lsp support
+  Plug 'williamboman/nvim-lsp-installer'                     " lsp install servers
   Plug 'hrsh7th/nvim-compe'                                  " autocomplete
   Plug 'hrsh7th/vim-vsnip'                                   " snippets
-  Plug 'kabouzeid/nvim-lspinstall'                           " install lsps easily
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " supposedly better syntax
   Plug 'hoob3rt/lualine.nvim'                                " info line
   Plug 'rking/ag.vim'                                        " better search with :Ag
@@ -124,11 +124,6 @@ require "tmux".setup {
 }
 EOF
 
-  " lspinstall
-lua << EOF
-require'lspinstall'.setup()
-EOF
-
   " lspconfig
 lua << EOF
 local nvim_lsp = require('lspconfig')
@@ -164,18 +159,19 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 end
 
--- Use a loop to conveniently call 'setup' on multiple servers and
--- map buffer local keybindings when the language server attaches
-local servers = require'lspinstall'.installed_servers()
+local lsp_installer = require("nvim-lsp-installer")
 
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
+-- Register a handler that will be called for all installed servers.
+lsp_installer.on_server_ready(function(server)
+  local opts = {
     on_attach = on_attach,
     flags = {
       debounce_text_changes = 150,
     }
   }
-end
+
+  server:setup(opts)
+end)
 EOF
 
   " compe
