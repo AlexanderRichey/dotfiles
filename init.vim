@@ -276,7 +276,15 @@ EOF
 
   " telescope
 lua << EOF
-require('telescope').setup{}
+require('telescope').setup{
+  defaults = {
+    file_ignore_patterns = {
+      "node_modules",
+      "build",
+      "public",
+    },
+  },
+}
 EOF
 
 " Find files using Telescope command-line sugar.
