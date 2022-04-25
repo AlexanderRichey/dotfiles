@@ -1,4 +1,8 @@
+# Configuration for ZSH
+# Author: AlexanderRichey (alrichey@)
+
 # Prompt
+# -----------------------------------------------------------------------------
 parse_git_branch() {
   BRANCH=$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
 
@@ -28,7 +32,9 @@ PROMPT='
 (%*) %n@%m $(current_venv)%B%~%b$(parse_git_branch)
  %F{red}➜%f '
 
-# Settings
+
+# Global Settings & Shortcuts
+# -----------------------------------------------------------------------------
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export EDITOR=vi
 export VISUAL=vi
@@ -42,7 +48,9 @@ alias dt='cd ~/Desktop'
 alias vim='nvim'
 alias del='gio trash'
 
-# Mac
+
+# Mac Settings
+# -----------------------------------------------------------------------------
 if [[ $(uname) == "Darwin" ]]; then
   # Brew
   eval $(/opt/homebrew/bin/brew shellenv)
@@ -52,7 +60,9 @@ if [[ $(uname) == "Darwin" ]]; then
   export CLICOLOR=1
 fi
 
-# Linux
+
+# Linux Settings
+# -----------------------------------------------------------------------------
 if [[ $(uname) == "Linux" ]]; then
   # Brew
   eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
@@ -67,7 +77,9 @@ if [[ $(uname) == "Linux" ]]; then
   alias grep='grep --color=auto'
 fi
 
-# Git completion
+
+# Git Completion
+# -----------------------------------------------------------------------------
 #
 #     brew install zsh-completion
 #
@@ -79,27 +91,25 @@ if type brew &>/dev/null; then
   compinit
 fi
 
-# Add local bins
-if [ -d "$HOME/.local/bin" ] ; then
-  PATH="$HOME/.local/bin:$PATH"
-fi
 
-# Add global go bins
-if [ -d "/usr/local/go/bin" ]; then
-  PATH="/usr/local/go/bin:$PATH"
-fi
+# Add Bins
+# -----------------------------------------------------------------------------
+BIN_PATHS=(
+  "$HOME/.local/bin"
+  "/usr/local/go/bin"
+  "$HOME/go/bin"
+  "$HOME/.yarn/bin"
+)
 
-# Add local go bins
-if [ -d "$HOME/go/bin" ]; then
-  PATH="$HOME/go/bin:$PATH"
-fi
+for p in "${BIN_PATHS[@]}"; do
+  if [ -d $p ] ; then
+    PATH="$p:$PATH"
+  fi
+done
 
-# Add local yarn bins
-if [ -d "$HOME/.yarn/bin" ]; then
-  PATH="$HOME/.yarn/bin:$PATH"
-fi
 
 # Work Stuff
+# -----------------------------------------------------------------------------
 if [[ $USER == "alrichey" ]]; then
   # It's okay
   if [ -d "$HOME/.toolbox/bin" ]; then
