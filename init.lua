@@ -106,7 +106,7 @@ require('packer').startup(function()
   }
 
   -- show git diff
-  use { 
+  use {
     'lewis6991/gitsigns.nvim',
     requires = { 'nvim-lua/plenary.nvim' },
     config = function() require('gitsigns').setup{} end
@@ -374,21 +374,18 @@ require'cmp'.setup.cmdline(':', {
 
 -- configure lspconfig with installed lsps
 require'nvim-lsp-installer'.on_server_ready(function(server)
-  server:setup({})
-
-  require('lspconfig')[server.name].setup {
+  server:setup({
     on_attach = function()
-      local opts = { noremap=true, silent=true }
-      nmap('gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-      nmap('gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-      nmap('K', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-      nmap('gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-      nmap('<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-      nmap('<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-      nmap('<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-      nmap('gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-      nmap('<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-      nmap('<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+      nmap('gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
+      nmap('gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
+      nmap('K', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
+      nmap('gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
+      nmap('<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
+      nmap('<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
+      nmap('<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
+      nmap('gr', '<cmd>lua vim.lsp.buf.references()<CR>')
+      nmap('<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>')
+      nmap('<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>')
     end,
 
     flags = {
@@ -398,7 +395,7 @@ require'nvim-lsp-installer'.on_server_ready(function(server)
     capabilities = require('cmp_nvim_lsp').update_capabilities(
       vim.lsp.protocol.make_client_capabilities()
     )
-  }
+  })
 end)
 
 -- integrate autopairs
