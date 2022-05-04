@@ -93,6 +93,7 @@ require('packer').startup(function()
             "build",
             "public",
             "tmp",
+            "lang",
           },
         },
       }
@@ -152,8 +153,8 @@ require('packer').startup(function()
       'hrsh7th/cmp-buffer',
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-cmdline',
-      'hrsh7th/cmp-vsnip',
-      'hrsh7th/vim-vsnip',
+      'saadparwaiz1/cmp_luasnip',
+      'L3MON4D3/LuaSnip',
     },
     config = function()
       -- see config below
@@ -173,8 +174,7 @@ require('packer').startup(function()
           "python",
         },
         highlight = {
-          enable = true,
-          disable = { "vim", "javascript", "javascriptreact", "typescript" },
+          enable = false,
           additional_vim_regex_highlighting = false,
         },
       }
@@ -309,8 +309,8 @@ vim.cmd([[
   " lint
   let g:ale_enabled=1
   let g:ale_linters = {
-  \  'javascript': ['prettier'],
-  \  'javascriptreact': ['prettier'],
+  \  'javascript': ['eslint'],
+  \  'javascriptreact': ['eslint'],
   \  'python': ['black'],
   \  'html': ['prettier'],
   \  'go': ['golangci-lint'],
@@ -329,9 +329,6 @@ vim.cmd([[
 
   " complete
   let g:ale_completion_enabled = 0 " use compe instead
-
-  " lsp
-  let g:ale_disable_lsp = 1 " use built in instead
 ]])
 
 
@@ -339,12 +336,15 @@ vim.cmd([[
 -------------------------------------------------------------------------------
 
 local cmp = require'cmp'
+local luasnip = require'luasnip'
+local lspinstaller = require'nvim-lsp-installer'
+local lspconfig = require'lspconfig'
 
 -- setup
-require'cmp'.setup({
+cmp.setup({
   snippet = {
     expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body)
+      luasnip.lsp_expand(args.body)
     end
   },
   window = {},
@@ -352,18 +352,36 @@ require'cmp'.setup({
     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-e>'] = cmp.mapping.abort(),
-    ['<Tab>'] = cmp.mapping.select_next_item(),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }), 
+    ['<Tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+    ['<S-Tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
   }),
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
+    { name = 'luasnip' },
   }, {
     { name = 'buffer' },
   })
 })
 
 -- use cmdline and path source for ':'
-require'cmp'.setup.cmdline(':', {
+cmp.setup.cmdline(':', {
   mapping = cmp.mapping.preset.cmdline(),
   sources = cmp.config.sources({
     { name = 'path' }
@@ -373,8 +391,12 @@ require'cmp'.setup.cmdline(':', {
 })
 
 -- configure lspconfig with installed lsps
-require'nvim-lsp-installer'.on_server_ready(function(server)
-  server:setup({
+lspinstaller.setup{}
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+
+for _, server in ipairs(lspinstaller.get_installed_servers()) do
+  lspconfig[server.name].setup{
     on_attach = function()
       nmap('gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
       nmap('gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
@@ -392,14 +414,12 @@ require'nvim-lsp-installer'.on_server_ready(function(server)
       debounce_text_changes = 150,
     },
 
-    capabilities = require('cmp_nvim_lsp').update_capabilities(
-      vim.lsp.protocol.make_client_capabilities()
-    )
-  })
-end)
+    capabilities = require'cmp_nvim_lsp'.update_capabilities(capabilities)
+  }
+end
 
 -- integrate autopairs
-require'cmp'.event:on('confirm_done',
+cmp.event:on('confirm_done',
   require'nvim-autopairs.completion.cmp'.on_confirm_done({
       map_char = { tex = '' }
   })
