@@ -9,24 +9,16 @@ function map(mode, shortcut, command)
   vim.api.nvim_set_keymap(mode, shortcut, command, { noremap = true, silent = true })
 end
 
+function bufmap(bufn, mode, shortcut, command)
+  vim.api.nvim_buf_set_keymap(bufn, mode, shortcut, command, { noremap = true, silent = true })
+end
+
 function nmap(shortcut, command)
   map('n', shortcut, command)
 end
 
-function imap(shortcut, command)
-  map('i', shortcut, command)
-end
-
-function vmap(shortcut, command)
-  map('v', shortcut, command)
-end
-
-function cmap(shortcut, command)
-  map('c', shortcut, command)
-end
-
-function tmap(shortcut, command)
-  map('t', shortcut, command)
+function nbufmap(bufn, shortcut, command)
+  bufmap(bufn, 'n', shortcut, command)
 end
 
 
@@ -140,7 +132,7 @@ require('packer').startup(function()
   use {
     'williamboman/nvim-lsp-installer',
     config = function()
-      -- see config below
+      -- see more config below
     end
   }
 
@@ -314,6 +306,7 @@ vim.cmd([[
   \  'python': ['black'],
   \  'html': ['prettier'],
   \  'go': ['golangci-lint'],
+  \  'java': [],
   \}
 
   " fix
@@ -328,7 +321,7 @@ vim.cmd([[
   \}
 
   " complete
-  let g:ale_completion_enabled = 0 " use compe instead
+  let g:ale_completion_enabled = 0 " use cmp instead
 ]])
 
 
@@ -391,31 +384,68 @@ cmp.setup.cmdline(':', {
 })
 
 -- configure lspconfig with installed lsps
-lspinstaller.setup{}
+lspinstaller.setup()
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
+local default_on_attach = function(_, bufn)
+  nbufmap(bufn, 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
+  nbufmap(bufn, 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
+  nbufmap(bufn, 'K', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
+  nbufmap(bufn, 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
+  nbufmap(bufn, '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
+  nbufmap(bufn, '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
+  nbufmap(bufn, '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
+  nbufmap(bufn, 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
+  nbufmap(bufn, '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>')
+  nbufmap(bufn, '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>')
+end
 
 for _, server in ipairs(lspinstaller.get_installed_servers()) do
-  lspconfig[server.name].setup{
-    on_attach = function()
-      nmap('gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
-      nmap('gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
-      nmap('K', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
-      nmap('gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
-      nmap('<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
-      nmap('<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
-      nmap('<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
-      nmap('gr', '<cmd>lua vim.lsp.buf.references()<CR>')
-      nmap('<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>')
-      nmap('<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>')
-    end,
+  if server.name == 'jdtls' then
+    local ws_folders_lsp = {}
+    local ws_folders_jdtls = {}
+    local file = io.open("../../.bemol/ws_root_folders", "r");
+    if file then
+      for line in file:lines() do
+        table.insert(ws_folders_lsp, line);
+        table.insert(ws_folders_jdtls, string.format("file://%s", line))
+      end
+      file:close()
+    end
 
-    flags = {
-      debounce_text_changes = 150,
-    },
+    lspconfig[server.name].setup{
+      on_attach = function(_, bufn)
+        for _,line in ipairs(ws_folders_lsp) do
+          vim.lsp.buf.add_workspace_folder(line)
+        end
 
-    capabilities = require'cmp_nvim_lsp'.update_capabilities(capabilities)
-  }
+        default_on_attach(_, bufn)
+      end,
+
+      init_options = {
+        workspaceFolders = ws_folders_jdtls
+      },
+
+      flags = {
+        debounce_text_changes = 150,
+      },
+
+      capabilities = require'cmp_nvim_lsp'.update_capabilities(
+        vim.lsp.protocol.make_client_capabilities()
+      )
+    }
+  else
+    lspconfig[server.name].setup{
+      on_attach = default_on_attach,
+
+      flags = {
+        debounce_text_changes = 150,
+      },
+
+      capabilities = require'cmp_nvim_lsp'.update_capabilities(
+        vim.lsp.protocol.make_client_capabilities()
+      )
+    }
+  end
 end
 
 -- integrate autopairs

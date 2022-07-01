@@ -116,11 +116,17 @@ if [[ $USER == "alrichey" ]]; then
     PATH="$HOME/.toolbox/bin:$PATH"
   fi
 
+  # Mechanic
+  [ -f "$HOME/.local/share/mechanic/complete.zsh" ] && source "$HOME/.local/share/mechanic/complete.zsh"
+
   # AWS Autocomplete
   complete -C /usr/local/aws/bin/aws_completer aws
 
   # Ugh
   alias bb='brazil-build'
+  alias bre='brazil-runtime-exec'
+  alias brc='brazil-recursive-cmd'
+  alias bbb='brc --allPackages brazil-build'
 
   # Annoying security
   export GOPROXY=direct
