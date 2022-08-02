@@ -53,7 +53,9 @@ alias del='gio trash'
 # -----------------------------------------------------------------------------
 if [[ $(uname) == "Darwin" ]]; then
   # Brew
-  eval $(/opt/homebrew/bin/brew shellenv)
+  if [ -z $TMUX ]; then
+    eval $(/opt/homebrew/bin/brew shellenv)
+  fi
 
   # Colors
   export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
@@ -65,7 +67,9 @@ fi
 # -----------------------------------------------------------------------------
 if [[ $(uname) == "Linux" ]]; then
   # Brew
-  eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+  if [ -z $TMUX ]; then
+    eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+  fi
 
   # Normalize pbcopy/paste
   alias pbcopy='xclip -selection clipboard'
@@ -96,13 +100,14 @@ fi
 # -----------------------------------------------------------------------------
 BIN_PATHS=(
   "$HOME/.local/bin"
-  "/usr/local/go/bin"
   "$HOME/go/bin"
+  "/usr/local/go/bin"
   "$HOME/.yarn/bin"
+  "$HOME/.toolbox/bin"
 )
 
 for p in "${BIN_PATHS[@]}"; do
-  if [ -d $p ] ; then
+  if [ -d $p ] && [ -z $TMUX ] ; then
     PATH="$p:$PATH"
   fi
 done
@@ -111,11 +116,6 @@ done
 # Work Stuff
 # -----------------------------------------------------------------------------
 if [[ $USER == "alrichey" ]]; then
-  # It's okay
-  if [ -d "$HOME/.toolbox/bin" ]; then
-    PATH="$HOME/.toolbox/bin:$PATH"
-  fi
-
   # Mechanic
   [ -f "$HOME/.local/share/mechanic/complete.zsh" ] && source "$HOME/.local/share/mechanic/complete.zsh"
 
@@ -131,3 +131,13 @@ if [[ $USER == "alrichey" ]]; then
   # Annoying security
   export GOPROXY=direct
 fi
+
+# Helpers
+# -----------------------------------------------------------------------------
+timber () {
+    sshenv -a -e TimberFS/$1/Parkside
+}
+
+rn () {
+  tmux rename-window $1
+}
