@@ -53,9 +53,7 @@ alias del='gio trash'
 # -----------------------------------------------------------------------------
 if [[ $(uname) == "Darwin" ]]; then
   # Brew
-  if [ -z $TMUX ]; then
-    eval $(/opt/homebrew/bin/brew shellenv)
-  fi
+  eval $(/opt/homebrew/bin/brew shellenv)
 
   # Colors
   export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
@@ -67,9 +65,7 @@ fi
 # -----------------------------------------------------------------------------
 if [[ $(uname) == "Linux" ]]; then
   # Brew
-  if [ -z $TMUX ]; then
-    eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
-  fi
+  eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 
   # Normalize pbcopy/paste
   alias pbcopy='xclip -selection clipboard'
@@ -82,18 +78,21 @@ if [[ $(uname) == "Linux" ]]; then
 fi
 
 
-# Git Completion
+# Completions
 # -----------------------------------------------------------------------------
 #
 #     brew install zsh-completion
 #
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
-
-  # https://github.com/zsh-users/zsh-completions/issues/433
-  autoload -Uz compinit
-  compinit
 fi
+
+# https://github.com/zsh-users/zsh-completions/issues/433
+autoload -Uz compinit && compinit
+autoload bashcompinit && bashcompinit
+
+# AWS Autocomplete
+complete -C $(which aws_completer) aws
 
 
 # Add Bins
@@ -107,8 +106,8 @@ BIN_PATHS=(
 )
 
 for p in "${BIN_PATHS[@]}"; do
-  if [ -d $p ] && [ -z $TMUX ] ; then
-    PATH="$p:$PATH"
+  if [ -d $p ] ; then
+    PATH="$PATH:$p"
   fi
 done
 
@@ -118,9 +117,6 @@ done
 if [[ $USER == "alrichey" ]]; then
   # Mechanic
   [ -f "$HOME/.local/share/mechanic/complete.zsh" ] && source "$HOME/.local/share/mechanic/complete.zsh"
-
-  # AWS Autocomplete
-  complete -C /usr/local/aws/bin/aws_completer aws
 
   # Ugh
   alias bb='brazil-build'
