@@ -112,28 +112,8 @@ for p in "${BIN_PATHS[@]}"; do
 done
 
 
-# Work Stuff
-# -----------------------------------------------------------------------------
-if [[ $USER == "alrichey" ]]; then
-  # Mechanic
-  [ -f "$HOME/.local/share/mechanic/complete.zsh" ] && source "$HOME/.local/share/mechanic/complete.zsh"
-
-  # Ugh
-  alias bb='brazil-build'
-  alias bre='brazil-runtime-exec'
-  alias brc='brazil-recursive-cmd'
-  alias bbb='brc --allPackages brazil-build'
-
-  # Annoying security
-  export GOPROXY=direct
-fi
-
 # Helpers
 # -----------------------------------------------------------------------------
-timber () {
-    sshenv -a -e TimberFS/$1/Parkside
-}
-
 rn () {
   tmux rename-window $1
 }
