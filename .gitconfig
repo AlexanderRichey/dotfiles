@@ -13,9 +13,11 @@
 
 	# Show files ignored by git:
 	ign = ls-files -o -i --exclude-standard
+	dag = log --graph --format='format:%C(yellow)%h%C(reset) %C(blue)%an <%ae>%C(reset) %C(magenta)%cr%C(reset)%C(auto)%d%C(reset)%n%s' --date-order
 [core]
 	whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
 	editor=vi
+	pager = less -FMRiX
 [user]
 	name = Alexander Richey
 	email = alexander.richey@gmail.com
@@ -23,3 +25,9 @@
 	defaultBranch = main
 [pull]
 	ff = only
+[color]
+	ui = auto
+[push]
+	default = simple
+[includeIf "gitdir:~/wp/"]
+	path = ~/.gitconfig-wp

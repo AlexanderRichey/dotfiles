@@ -15,7 +15,12 @@ Download [homebrew](https://brew.sh/) and use it to install:
 - nvm
 - yarn
 
-Install [vim-plug](https://github.com/junegunn/vim-plug).
+Install [Packer](https://github.com/wbthomason/packer.nvim).
+
+```bash
+git clone --depth 1 https://github.com/wbthomason/packer.nvim\
+  ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+```
 
 Link dotfiles. Here's an example:
 

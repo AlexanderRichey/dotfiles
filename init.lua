@@ -120,19 +120,27 @@ require('packer').startup(function()
     end
   }
 
-  -- lsp
+  -- lsp installer
   use {
-    'neovim/nvim-lspconfig',
+    'williamboman/mason.nvim',
     config = function()
-      -- see config below
+      require('mason').setup()
     end
   }
 
   -- lsp installer
   use {
-    'williamboman/nvim-lsp-installer',
+    'williamboman/mason-lspconfig.nvim',
     config = function()
-      -- see more config below
+      require('mason-lspconfig').setup()
+    end
+  }
+
+  -- lsp
+  use {
+    'neovim/nvim-lspconfig',
+    config = function()
+      -- see config below
     end
   }
 
@@ -164,9 +172,12 @@ require('packer').startup(function()
           "javascript",
           "typescript",
           "python",
+          "java",
+          "kotlin",
+          "smithy",
         },
         highlight = {
-          enable = false,
+          enable = true,
           additional_vim_regex_highlighting = false,
         },
       }
@@ -254,6 +265,8 @@ vim.opt.path = '.,src,src/shared,node_nodules'
 -- resovle gf, gd to these extensions
 vim.opt.suffixesadd = '.js,.jsx'
 
+-- disable mouse mode
+vim.opt.mouse = ""
 
 -- Wild
 -------------------------------------------------------------------------------
@@ -330,7 +343,7 @@ vim.cmd([[
 
 local cmp = require'cmp'
 local luasnip = require'luasnip'
-local lspinstaller = require'nvim-lsp-installer'
+local masonlspconfig = require'mason-lspconfig'
 local lspconfig = require'lspconfig'
 
 -- setup
@@ -383,9 +396,6 @@ cmp.setup.cmdline(':', {
   })
 })
 
--- configure lspconfig with installed lsps
-lspinstaller.setup()
-
 local default_on_attach = function(_, bufn)
   nbufmap(bufn, 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
   nbufmap(bufn, 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
@@ -399,8 +409,12 @@ local default_on_attach = function(_, bufn)
   nbufmap(bufn, '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>')
 end
 
-for _, server in ipairs(lspinstaller.get_installed_servers()) do
-  if server.name == 'jdtls' then
+local default_capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+-- setup lsps
+for _, server in ipairs(masonlspconfig.get_installed_servers()) do
+  -- java is a special case
+  if server == 'jdtls' or server == 'kotlin' then
     local ws_folders_lsp = {}
     local ws_folders_jdtls = {}
     local file = io.open("../../.bemol/ws_root_folders", "r");
@@ -412,7 +426,7 @@ for _, server in ipairs(lspinstaller.get_installed_servers()) do
       file:close()
     end
 
-    lspconfig[server.name].setup{
+    lspconfig[server].setup{
       on_attach = function(_, bufn)
         for _,line in ipairs(ws_folders_lsp) do
           vim.lsp.buf.add_workspace_folder(line)
@@ -425,25 +439,25 @@ for _, server in ipairs(lspinstaller.get_installed_servers()) do
         workspaceFolders = ws_folders_jdtls
       },
 
-      flags = {
-        debounce_text_changes = 150,
+      capabilities = default_capabilities
+    }
+  elseif server == 'sumneko_lua' then
+    lspconfig[server].setup{
+      on_attach = default_on_attach,
+      capabilities = default_capabilities,
+      settings = {
+        Lua = {
+          diagnostics = {
+            -- Get the language server to recognize the `vim` global
+            globals = {'vim', 'use'},
+          },
+        },
       },
-
-      capabilities = require'cmp_nvim_lsp'.update_capabilities(
-        vim.lsp.protocol.make_client_capabilities()
-      )
     }
   else
-    lspconfig[server.name].setup{
+    lspconfig[server].setup{
       on_attach = default_on_attach,
-
-      flags = {
-        debounce_text_changes = 150,
-      },
-
-      capabilities = require'cmp_nvim_lsp'.update_capabilities(
-        vim.lsp.protocol.make_client_capabilities()
-      )
+      capabilities = default_capabilities
     }
   end
 end

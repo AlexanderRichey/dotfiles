@@ -88,6 +88,7 @@ if type brew &>/dev/null; then
 fi
 
 # https://github.com/zsh-users/zsh-completions/issues/433
+# https://stackoverflow.com/questions/13762280/zsh-compinit-insecure-directories
 autoload -Uz compinit && compinit
 autoload bashcompinit && bashcompinit
 
