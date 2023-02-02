@@ -2,26 +2,6 @@
 -- Author: AlexanderRichey (alrichey@)
 
 
--- Utility Functions
--------------------------------------------------------------------------------
-
-function map(mode, shortcut, command)
-  vim.api.nvim_set_keymap(mode, shortcut, command, { noremap = true, silent = true })
-end
-
-function bufmap(bufn, mode, shortcut, command)
-  vim.api.nvim_buf_set_keymap(bufn, mode, shortcut, command, { noremap = true, silent = true })
-end
-
-function nmap(shortcut, command)
-  map('n', shortcut, command)
-end
-
-function nbufmap(bufn, shortcut, command)
-  bufmap(bufn, 'n', shortcut, command)
-end
-
-
 -- Packer
 -------------------------------------------------------------------------------
 
@@ -52,33 +32,34 @@ require('packer').startup(function()
     'aserowy/tmux.nvim',
     config = function()
       require("tmux").setup({
-          navigation = {
-              -- enables default keybindings (C-hjkl) for normal mode
-              enable_default_keybindings = true,
-          },
-          resize = {
-              -- enables default keybindings (A-hjkl) for normal mode
-              enable_default_keybindings = true,
-          }
+        navigation = {
+          -- enables default keybindings (C-hjkl) for normal mode
+          enable_default_keybindings = true,
+        },
+        resize = {
+          -- enables default keybindings (A-hjkl) for normal mode
+          enable_default_keybindings = true,
+        }
       })
     end
   }
 
-  -- language pack
-  use 'sheerun/vim-polyglot'
-
-  -- theme
-  use 'Th3Whit3Wolf/one-nvim'
+  use {
+    'navarasu/onedark.nvim',
+    config = function()
+      require('onedark').load()
+    end
+  }
 
   -- fuzzy finder, etc.
   use {
     'nvim-telescope/telescope.nvim',
     requires = {
-      {'nvim-lua/popup.nvim'},  -- lua-based pop window
-      {'nvim-lua/plenary.nvim'}  -- lua functions, dependency of many plugins
+      { 'nvim-lua/popup.nvim' }, -- lua-based pop window
+      { 'nvim-lua/plenary.nvim' } -- lua functions, dependency of many plugins
     },
     config = function()
-      require('telescope').setup{
+      require('telescope').setup {
         defaults = {
           file_ignore_patterns = {
             "node_modules",
@@ -91,10 +72,10 @@ require('packer').startup(function()
       }
 
       -- Map find_files to ctrl-p
-      nmap("<C-p>", "<cmd>Telescope find_files<cr>")
+      vim.api.nvim_set_keymap('n', "<C-p>", "<cmd>Telescope find_files<cr>", { noremap = true, silent = true })
 
       -- Map live_grep to \-f
-      nmap("<leader>f", "<cmd>Telescope live_grep<cr>")
+      vim.api.nvim_set_keymap('n', "<leader>f", "<cmd>Telescope live_grep<cr>", { noremap = true, silent = true })
     end
   }
 
@@ -102,7 +83,7 @@ require('packer').startup(function()
   use {
     'lewis6991/gitsigns.nvim',
     requires = { 'nvim-lua/plenary.nvim' },
-    config = function() require('gitsigns').setup{} end
+    config = function() require('gitsigns').setup {} end
   }
 
   -- multicursor
@@ -166,7 +147,7 @@ require('packer').startup(function()
     'nvim-treesitter/nvim-treesitter',
     run = ':TSUpdate',
     config = function()
-      require('nvim-treesitter.configs').setup{
+      require('nvim-treesitter.configs').setup {
         ensure_installed = {
           "go",
           "javascript",
@@ -174,7 +155,7 @@ require('packer').startup(function()
           "python",
           "java",
           "kotlin",
-          "smithy",
+          "bash",
         },
         highlight = {
           enable = true,
@@ -188,7 +169,7 @@ require('packer').startup(function()
   use {
     'windwp/nvim-autopairs',
     config = function()
-      require('nvim-autopairs').setup{
+      require('nvim-autopairs').setup {
         enable_check_bracket_line = false,
       }
     end
@@ -196,9 +177,6 @@ require('packer').startup(function()
 
   -- prose mode
   use 'reedes/vim-pencil'
-
-  -- linting
-  use 'w0rp/ale'
 end)
 
 
@@ -287,64 +265,24 @@ vim.opt.wildignore = '*/node_modules/*,*.so,*.swp,*.zip,*.pyc,*.git,*/env/*,tags
 -- enable colors
 vim.opt.termguicolors = true
 
--- set the theme
-vim.cmd('colorscheme one-nvim')
-
--- set the variant
-vim.opt.background = 'dark'
-
 
 -- lualine
 -------------------------------------------------------------------------------
 
-require'lualine'.setup{
+require 'lualine'.setup {
   options = {
     theme = 'onedark',
-    icons_enabled = false,
-    component_separators = {'', ''},
-    section_separators = {'', ''},
   },
 }
-
-
--- ALE
--------------------------------------------------------------------------------
-
-vim.cmd([[
-  " lint
-  let g:ale_enabled=1
-  let g:ale_linters = {
-  \  'javascript': ['eslint'],
-  \  'javascriptreact': ['eslint'],
-  \  'python': ['black'],
-  \  'html': ['prettier'],
-  \  'go': ['golangci-lint'],
-  \  'java': [],
-  \}
-
-  " fix
-  let g:ale_fix_on_save=1
-  let g:ale_fixers = {
-  \  'javascript': ['prettier'],
-  \  'javascriptreact': ['prettier'],
-  \  'python': ['black'],
-  \  'json': ['prettier'],
-  \  'yaml': ['prettier'],
-  \  'go': ['gofmt'],
-  \}
-
-  " complete
-  let g:ale_completion_enabled = 0 " use cmp instead
-]])
 
 
 -- nvim-cmp
 -------------------------------------------------------------------------------
 
-local cmp = require'cmp'
-local luasnip = require'luasnip'
-local masonlspconfig = require'mason-lspconfig'
-local lspconfig = require'lspconfig'
+local cmp = require 'cmp'
+local luasnip = require 'luasnip'
+local masonlspconfig = require 'mason-lspconfig'
+local lspconfig = require 'lspconfig'
 
 -- setup
 cmp.setup({
@@ -396,76 +334,69 @@ cmp.setup.cmdline(':', {
   })
 })
 
+-- setup lsps
 local default_on_attach = function(_, bufn)
-  nbufmap(bufn, 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
-  nbufmap(bufn, 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
-  nbufmap(bufn, 'K', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
-  nbufmap(bufn, 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
-  nbufmap(bufn, '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
-  nbufmap(bufn, '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
-  nbufmap(bufn, '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
-  nbufmap(bufn, 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
-  nbufmap(bufn, '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>')
-  nbufmap(bufn, '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>')
+  local options = { noremap = true, silent = true }
+  vim.api.nvim_buf_set_keymap(bufn, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', options)
+  vim.api.nvim_buf_set_keymap(bufn, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', options)
+  vim.api.nvim_buf_set_keymap(bufn, 'n', 'K', '<cmd>lua vim.lsp.buf.signature_help()<CR>', options)
+  vim.api.nvim_buf_set_keymap(bufn, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', options)
+  vim.api.nvim_buf_set_keymap(bufn, 'n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', options)
+  vim.api.nvim_buf_set_keymap(bufn, 'n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', options)
+  vim.api.nvim_buf_set_keymap(bufn, 'n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', options)
+  vim.api.nvim_buf_set_keymap(bufn, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', options)
+  vim.api.nvim_buf_set_keymap(bufn, 'n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', options)
+  vim.api.nvim_buf_set_keymap(bufn, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', options)
+  print("LSP attached on buffer", bufn)
 end
 
 local default_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
--- setup lsps
+local server_configs = {
+  ['default'] = {
+    on_attach = default_on_attach,
+    capabilities = default_capabilities
+  },
+  ['sumneko_lua'] = {
+    on_attach = default_on_attach,
+    capabilities = default_capabilities,
+    settings = {
+      Lua = {
+        diagnostics = {
+          -- Get the language server to recognize the `vim` global
+          globals = { 'vim', 'use' }
+        }
+      }
+    }
+  }
+}
+
 for _, server in ipairs(masonlspconfig.get_installed_servers()) do
-  -- java is a special case
-  if server == 'jdtls' or server == 'kotlin' then
-    local ws_folders_lsp = {}
-    local ws_folders_jdtls = {}
-    local file = io.open("../../.bemol/ws_root_folders", "r");
-    if file then
-      for line in file:lines() do
-        table.insert(ws_folders_lsp, line);
-        table.insert(ws_folders_jdtls, string.format("file://%s", line))
-      end
-      file:close()
-    end
-
-    lspconfig[server].setup{
-      on_attach = function(_, bufn)
-        for _,line in ipairs(ws_folders_lsp) do
-          vim.lsp.buf.add_workspace_folder(line)
-        end
-
-        default_on_attach(_, bufn)
-      end,
-
-      init_options = {
-        workspaceFolders = ws_folders_jdtls
-      },
-
-      capabilities = default_capabilities
-    }
-  elseif server == 'sumneko_lua' then
-    lspconfig[server].setup{
-      on_attach = default_on_attach,
-      capabilities = default_capabilities,
-      settings = {
-        Lua = {
-          diagnostics = {
-            -- Get the language server to recognize the `vim` global
-            globals = {'vim', 'use'},
-          },
-        },
-      },
-    }
+  if server_configs[server] ~= nil then
+    lspconfig[server].setup(server_configs[server])
   else
-    lspconfig[server].setup{
-      on_attach = default_on_attach,
-      capabilities = default_capabilities
-    }
+    lspconfig[server].setup(server_configs['default'])
   end
+end
+
+-- add bemol files to workspace if available
+local ws_folders_lsp = {}
+local file = io.open("../../.bemol/ws_root_folders", "r");
+if file then
+  for line in file:lines() do
+    table.insert(ws_folders_lsp, line);
+  end
+  file:close()
+end
+
+for _, line in ipairs(ws_folders_lsp) do
+  vim.lsp.buf.add_workspace_folder(line)
 end
 
 -- integrate autopairs
 cmp.event:on('confirm_done',
-  require'nvim-autopairs.completion.cmp'.on_confirm_done({
-      map_char = { tex = '' }
+  require 'nvim-autopairs.completion.cmp'.on_confirm_done({
+    map_char = { tex = '' }
   })
 )
 
@@ -473,21 +404,29 @@ cmp.event:on('confirm_done',
 -- Language Overrides
 -------------------------------------------------------------------------------
 
+-- kotlin
+vim.api.nvim_create_autocmd('Filetype', {
+  pattern = 'kotlin',
+  command = [[setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab autoindent]]
+})
+
 -- python
-vim.cmd([[
-  autocmd Filetype python setlocal
-    \ shiftwidth=4
-    \ tabstop=4
-    \ softtabstop=4
-    \ expandtab
-    \ autoindent
-]])
+vim.api.nvim_create_autocmd('Filetype', {
+  pattern = 'python',
+  command = [[setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab autoindent]]
+})
 
 -- go
-vim.cmd([[
-  autocmd Filetype go setlocal
-    \ shiftwidth=6
-    \ tabstop=6
-    \ noexpandtab
-    \ autoindent
-]])
+vim.api.nvim_create_autocmd('Filetype', {
+  pattern = 'go',
+  command = [[setlocal shiftwidth=6 tabstop=6 noexpandtab autoindent]]
+})
+
+-- Linting
+-------------------------------------------------------------------------------
+
+-- lint on save
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*',
+  command = [[lua vim.lsp.buf.format()]]
+})

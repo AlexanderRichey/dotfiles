@@ -118,3 +118,8 @@ done
 rn () {
   tmux rename-window $1
 }
+
+serve () {
+  echo "serving $(pwd) on http://$(hostname):8000"
+  python3 -m http.server
+}
