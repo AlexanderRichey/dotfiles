@@ -123,3 +123,11 @@ serve () {
   echo "serving $(pwd) on http://$(hostname):8000"
   python3 -m http.server
 }
+
+rsl () {
+  tmux resize-pane -L 20
+}
+
+rsr () {
+  tmux resize-pane -R 20
+}

@@ -425,8 +425,5 @@ vim.api.nvim_create_autocmd('Filetype', {
 -- Linting
 -------------------------------------------------------------------------------
 
--- lint on save
-vim.api.nvim_create_autocmd('BufWritePre', {
-  pattern = '*',
-  command = [[lua vim.lsp.buf.format()]]
-})
+-- auto-format with :Fmt
+vim.api.nvim_create_user_command('Fmt', [[lua vim.lsp.buf.format()]], {})
