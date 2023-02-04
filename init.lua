@@ -89,7 +89,13 @@ require('packer').startup(function()
   -- multicursor
   use {
     'mg979/vim-visual-multi',
-    branch = 'master'
+    branch = 'master',
+    config = function()
+      vim.g.VM_maps = {
+        -- disable backspace mapping to prevent conflict with autopairs
+        ["I BS"] = '',
+      }
+    end
   }
 
   -- info line
@@ -265,7 +271,15 @@ require 'lualine'.setup {
 
 local lsp = require('lsp-zero')
 lsp.preset('recommended')
+
+-- smarter autocompletion in init.lua
 lsp.nvim_workspace()
+
+-- prevent overriting defult tmux behavior
+lsp.set_preferences({
+  set_lsp_keymaps = { omit = { '<C-k>' } }
+})
+
 lsp.setup()
 
 -- show diagnostics by default
@@ -330,5 +344,8 @@ vim.api.nvim_create_autocmd('Filetype', {
 -- Linting
 -------------------------------------------------------------------------------
 
--- auto-format with :Fmt
-vim.api.nvim_create_user_command('Fmt', [[lua vim.lsp.buf.format()]], {})
+-- auto-format
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*',
+  command = [[lua vim.lsp.buf.format()]]
+})
