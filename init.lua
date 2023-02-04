@@ -101,45 +101,29 @@ require('packer').startup(function()
     end
   }
 
-  -- lsp installer
-  use {
-    'williamboman/mason.nvim',
-    config = function()
-      require('mason').setup()
-    end
-  }
-
-  -- lsp installer
-  use {
-    'williamboman/mason-lspconfig.nvim',
-    config = function()
-      require('mason-lspconfig').setup()
-    end
-  }
-
   -- lsp
   use {
-    'neovim/nvim-lspconfig',
-    config = function()
-      -- see config below
-    end
-  }
-
-  -- autocompletion
-  use {
-    'hrsh7th/nvim-cmp',
+    'VonHeikemen/lsp-zero.nvim',
+    branch = 'v1.x',
     requires = {
-      'neovim/nvim-lspconfig',
-      'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-path',
-      'hrsh7th/cmp-cmdline',
-      'saadparwaiz1/cmp_luasnip',
-      'L3MON4D3/LuaSnip',
-    },
-    config = function()
-      -- see config below
-    end
+      -- LSP Support
+      { 'neovim/nvim-lspconfig' }, -- Required
+      { 'williamboman/mason.nvim' }, -- Optional
+      { 'williamboman/mason-lspconfig.nvim' }, -- Optional
+
+      -- Autocompletion
+      { 'hrsh7th/nvim-cmp' }, -- Required
+      { 'hrsh7th/cmp-nvim-lsp' }, -- Required
+      { 'hrsh7th/cmp-buffer' }, -- Optional
+      { 'hrsh7th/cmp-path' }, -- Optional
+      { 'hrsh7th/cmp-cmdline' }, -- Optional
+      { 'saadparwaiz1/cmp_luasnip' }, -- Optional
+      { 'hrsh7th/cmp-nvim-lua' }, -- Optional
+
+      -- Snippets
+      { 'L3MON4D3/LuaSnip' }, -- Required
+      { 'rafamadriz/friendly-snippets' }, -- Optional
+    }
   }
 
   -- treesitter
@@ -276,55 +260,33 @@ require 'lualine'.setup {
 }
 
 
--- nvim-cmp
+-- LSP
 -------------------------------------------------------------------------------
 
-local cmp = require 'cmp'
-local luasnip = require 'luasnip'
-local masonlspconfig = require 'mason-lspconfig'
-local lspconfig = require 'lspconfig'
+local lsp = require('lsp-zero')
+lsp.preset('recommended')
+lsp.nvim_workspace()
+lsp.setup()
 
--- setup
-cmp.setup({
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end
+-- show diagnostics by default
+vim.diagnostic.config({
+  virtual_text = true,
+  signs = true,
+  update_in_insert = false,
+  underline = true,
+  severity_sort = true,
+  float = {
+    focusable = false,
+    style = 'minimal',
+    border = 'rounded',
+    source = 'always',
+    header = '',
+    prefix = '',
   },
-  window = {},
-  mapping = cmp.mapping.preset.insert({
-    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-e>'] = cmp.mapping.abort(),
-    ['<Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-    ['<S-Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }),
-  }),
-  sources = cmp.config.sources({
-    { name = 'nvim_lsp' },
-    { name = 'luasnip' },
-  }, {
-    { name = 'buffer' },
-  })
 })
 
--- use cmdline and path source for ':'
+-- cmdline autocompletion
+local cmp = require('cmp')
 cmp.setup.cmdline(':', {
   mapping = cmp.mapping.preset.cmdline(),
   sources = cmp.config.sources({
@@ -334,71 +296,14 @@ cmp.setup.cmdline(':', {
   })
 })
 
--- setup lsps
-local default_on_attach = function(_, bufn)
-  local options = { noremap = true, silent = true }
-  vim.api.nvim_buf_set_keymap(bufn, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', options)
-  vim.api.nvim_buf_set_keymap(bufn, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', options)
-  vim.api.nvim_buf_set_keymap(bufn, 'n', 'K', '<cmd>lua vim.lsp.buf.signature_help()<CR>', options)
-  vim.api.nvim_buf_set_keymap(bufn, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', options)
-  vim.api.nvim_buf_set_keymap(bufn, 'n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', options)
-  vim.api.nvim_buf_set_keymap(bufn, 'n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', options)
-  vim.api.nvim_buf_set_keymap(bufn, 'n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', options)
-  vim.api.nvim_buf_set_keymap(bufn, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', options)
-  vim.api.nvim_buf_set_keymap(bufn, 'n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', options)
-  vim.api.nvim_buf_set_keymap(bufn, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', options)
-  print("LSP attached on buffer", bufn)
-end
-
-local default_capabilities = require('cmp_nvim_lsp').default_capabilities()
-
-local server_configs = {
-  ['default'] = {
-    on_attach = default_on_attach,
-    capabilities = default_capabilities
-  },
-  ['sumneko_lua'] = {
-    on_attach = default_on_attach,
-    capabilities = default_capabilities,
-    settings = {
-      Lua = {
-        diagnostics = {
-          -- Get the language server to recognize the `vim` global
-          globals = { 'vim', 'use' }
-        }
-      }
-    }
-  }
-}
-
-for _, server in ipairs(masonlspconfig.get_installed_servers()) do
-  if server_configs[server] ~= nil then
-    lspconfig[server].setup(server_configs[server])
-  else
-    lspconfig[server].setup(server_configs['default'])
-  end
-end
-
 -- add bemol files to workspace if available
-local ws_folders_lsp = {}
 local file = io.open("../../.bemol/ws_root_folders", "r");
 if file then
   for line in file:lines() do
-    table.insert(ws_folders_lsp, line);
+    vim.lsp.buf.add_workspace_folder(line)
   end
   file:close()
 end
-
-for _, line in ipairs(ws_folders_lsp) do
-  vim.lsp.buf.add_workspace_folder(line)
-end
-
--- integrate autopairs
-cmp.event:on('confirm_done',
-  require 'nvim-autopairs.completion.cmp'.on_confirm_done({
-    map_char = { tex = '' }
-  })
-)
 
 
 -- Language Overrides
