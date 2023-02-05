@@ -63,6 +63,8 @@ All these commands apply in normal mode. `C` means `Ctrl`. These key bindings ar
 - `[d`: Move to the previous diagnostic in the current buffer. See [:help vim.diagnostic.goto_prev()](https://neovim.io/doc/user/diagnostic.html#vim.diagnostic.goto_prev()).
 - `]d`: Move to the next diagnostic. See [:help vim.diagnostic.goto_next()](https://neovim.io/doc/user/diagnostic.html#vim.diagnostic.goto_next()).
 
+In visual mode, [multi-cursor](https://github.com/mg979/vim-visual-multi) is available by selecting text and pressing `<C-n>`.
+
 ## Extras
 
 If you haven't created a default SSH key for your machine, run the follwing.
