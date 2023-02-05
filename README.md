@@ -4,7 +4,7 @@ These are my dotfiles.
 
 ## Getting Started
 
-Symlink dotfiles to their approprate locations.
+Symlink dotfiles to their appropriate locations.
 
 ```bash
 # Here's a couple examples...
@@ -67,7 +67,7 @@ In visual mode, [multi-cursor](https://github.com/mg979/vim-visual-multi) is ava
 
 ## Extras
 
-If you haven't created a default SSH key for your machine, run the follwing.
+If you haven't created a default SSH key for your machine, run the following.
 
 ```bash
 ./gen_keypair.sh
