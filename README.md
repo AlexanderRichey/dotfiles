@@ -22,7 +22,7 @@ Download and import terminal colorschemes for all the colors 🌈 to match.
 - [Mac](https://github.com/nathanbuchar/atom-one-dark-terminal)
 - [Linux](https://github.com/denysdovhan/one-gnome-terminal)
 
-## Vim Features
+## Vim
 
 To get started, install [`nvim`](https://neovim.io/). The easiest way to do this is with [`brew`](https://brew.sh/):
 
@@ -41,12 +41,18 @@ When you open `nvim` for the first time, you'll see some errors. This is expecte
 
 One thing to know about Packer is `:PackerCompile`. If you make changes to your `init.lua` but don't see any changes in `nvim`'s behavior, then you probably just need to run `:PackerCompile`, which regenerates Packer's compiled loader file.
 
-### Key Bindings
+Use a [nerdfont](https://www.nerdfonts.com/) if you see question marks in the UI.
+
+One more note: Some people like to have huge `init.lua`s made of several files and directories. My preferences are closer to the other end of the spectrum. My goal is to have it all in *one file*.
+
+### Features & Key Bindings
 
 All these commands apply in normal mode. `C` means `Ctrl`. These key bindings are defaults from [lsp-zero.nvim](https://github.com/VonHeikemen/lsp-zero.nvim) and [tmux.nvim](https://github.com/aserowy/tmux.nvim), plus a few other things.
 
 - `<C-p>`: Fuzzy finder.
+- `-`: Browse folder tree with [vim-vinegar](https://github.com/tpope/vim-vinegar).
 - `\f`: Project-wide text search.
+- `gcc`: Comment in/out code (also works in visual mode).
 - `<C-h>`: Move cursor pane-left.
 - `<C-j>`: Move cursor pane-down.
 - `<C-k>`: Move cursor pane-up.
@@ -62,6 +68,7 @@ All these commands apply in normal mode. `C` means `Ctrl`. These key bindings ar
 - `gl`: Show diagnostics in a floating window. See [:help vim.diagnostic.open_float()](https://neovim.io/doc/user/diagnostic.html#vim.diagnostic.open_float()).
 - `[d`: Move to the previous diagnostic in the current buffer. See [:help vim.diagnostic.goto_prev()](https://neovim.io/doc/user/diagnostic.html#vim.diagnostic.goto_prev()).
 - `]d`: Move to the next diagnostic. See [:help vim.diagnostic.goto_next()](https://neovim.io/doc/user/diagnostic.html#vim.diagnostic.goto_next()).
+- `ys<motion><surrounding>`: See [vim-surround](https://github.com/tpope/vim-surround).
 
 In visual mode, [multi-cursor](https://github.com/mg979/vim-visual-multi) is available by selecting text and pressing `<C-n>`.
 
