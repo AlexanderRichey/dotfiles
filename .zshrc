@@ -115,13 +115,13 @@ done
 
 # Helpers
 # -----------------------------------------------------------------------------
-rn () {
-  tmux rename-window $1
-}
-
 serve () {
   echo "serving $(pwd) on http://$(hostname):8000"
   python3 -m http.server
+}
+
+rn () {
+  tmux rename-window $1
 }
 
 rsl () {
@@ -130,4 +130,8 @@ rsl () {
 
 rsr () {
   tmux resize-pane -R 20
+}
+
+find-file() {
+  find . -name $1
 }
