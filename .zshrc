@@ -29,7 +29,7 @@ current_venv() {
 
 setopt PROMPT_SUBST
 PROMPT='
-(%*) %n@%m $(current_venv)%B%~%b$(parse_git_branch)
+(%*) %n@%m $(current_venv)%B%1~%b$(parse_git_branch)
  %F{red}➜%f '
 
 
@@ -108,7 +108,7 @@ BIN_PATHS=(
 
 for p in "${BIN_PATHS[@]}"; do
   if [ -d $p ] ; then
-    PATH="$PATH:$p"
+    export PATH="$PATH:$p"
   fi
 done
 
@@ -130,8 +130,4 @@ rsl () {
 
 rsr () {
   tmux resize-pane -R 20
-}
-
-find-file() {
-  find . -name $1
 }
