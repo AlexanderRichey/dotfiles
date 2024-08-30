@@ -64,7 +64,6 @@ require('packer').startup(function()
           file_ignore_patterns = {
             "node_modules",
             "build",
-            "public",
             "tmp",
             "lang",
           },
@@ -110,7 +109,7 @@ require('packer').startup(function()
   -- lsp
   use {
     'VonHeikemen/lsp-zero.nvim',
-    branch = 'v1.x',
+    branch = 'v3.x',
     requires = {
       -- LSP Support
       { 'neovim/nvim-lspconfig' }, -- Required
@@ -139,13 +138,13 @@ require('packer').startup(function()
     config = function()
       require('nvim-treesitter.configs').setup {
         ensure_installed = {
-          "go",
-          "javascript",
-          "typescript",
-          "python",
-          "java",
-          "kotlin",
-          "bash",
+          -- "go",
+          -- "javascript",
+          -- "typescript",
+          -- "python",
+          -- "java",
+          -- "kotlin",
+          -- "bash",
         },
         highlight = {
           enable = true,
@@ -157,11 +156,10 @@ require('packer').startup(function()
 
   -- autoclose pairs
   use {
-    'windwp/nvim-autopairs',
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
     config = function()
-      require('nvim-autopairs').setup {
-        enable_check_bracket_line = false,
-      }
+        require("nvim-autopairs").setup {}
     end
   }
 
@@ -269,38 +267,107 @@ require 'lualine'.setup {
 -- LSP
 -------------------------------------------------------------------------------
 
-local lsp = require('lsp-zero')
-lsp.preset('recommended')
+local lsp_zero = require('lsp-zero')
 
--- smarter autocompletion in init.lua
-lsp.nvim_workspace()
+lsp_zero.on_attach(function(client, bufnr)
+  -- see :help lsp-zero-keybindings
+  -- to learn the available actions
+  lsp_zero.default_keymaps({buffer = bufnr})
+end)
 
--- prevent overriting defult tmux behavior
-lsp.set_preferences({
-  set_lsp_keymaps = { omit = { '<C-k>' } }
+--- if you want to know more about lsp-zero and mason.nvim
+--- read this: https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/guides/integrate-with-mason-nvim.md
+require('mason').setup({})
+require('mason-lspconfig').setup({
+  ensure_installed = {},
+  handlers = {
+    function(server_name)
+      require('lspconfig')[server_name].setup({})
+    end,
+    lua_ls = function()
+      local lua_opts = lsp_zero.nvim_lua_ls()
+      require('lspconfig').lua_ls.setup(lua_opts)
+    end,
+  }
 })
 
-lsp.setup()
+lsp_zero.set_sign_icons({
+  error = '✘',
+  warn = '▲',
+  hint = '⚑',
+  info = ''
+})
 
--- show diagnostics by default
 vim.diagnostic.config({
-  virtual_text = true,
-  signs = true,
-  update_in_insert = false,
-  underline = true,
+  virtual_text = false,
   severity_sort = true,
   float = {
-    focusable = false,
     style = 'minimal',
     border = 'rounded',
-    source = 'always',
+    source = true,
     header = '',
     prefix = '',
   },
 })
 
--- cmdline autocompletion
 local cmp = require('cmp')
+local cmp_action = lsp_zero.cmp_action()
+local cmp_format = lsp_zero.cmp_format()
+
+require('luasnip.loaders.from_vscode').lazy_load()
+
+vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
+
+cmp.setup({
+  formatting = cmp_format,
+  preselect = 'item',
+  completion = {
+    completeopt = 'menu,menuone,noinsert'
+  },
+  window = {
+    documentation = cmp.config.window.bordered(),
+  },
+  sources = {
+    {name = 'path'},
+    {name = 'nvim_lsp'},
+    {name = 'nvim_lua'},
+    {name = 'buffer', keyword_length = 3},
+    {name = 'luasnip', keyword_length = 2},
+  },
+  mapping = cmp.mapping.preset.insert({
+    -- confirm completion item
+    ['<CR>'] = cmp.mapping.confirm({select = false}),
+
+    -- toggle completion menu
+    ['<C-e>'] = cmp_action.toggle_completion(),
+
+    -- tab complete
+    ['<Tab>'] = cmp_action.tab_complete(),
+    ['<S-Tab>'] = cmp.mapping.select_prev_item(),
+
+    -- navigate between snippet placeholder
+    ['<C-d>'] = cmp_action.luasnip_jump_forward(),
+    ['<C-b>'] = cmp_action.luasnip_jump_backward(),
+
+    -- scroll documentation window
+    ['<C-f>'] = cmp.mapping.scroll_docs(5),
+    ['<C-u>'] = cmp.mapping.scroll_docs(-5),
+  }),
+  snippet = {
+    expand = function(args)
+      require('luasnip').lsp_expand(args.body)
+    end,
+  },
+})
+
+-- integrate autopairs
+-- local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+-- cmp.event:on(
+--   'confirm_done',
+--   cmp_autopairs.on_confirm_done()
+-- )
+
+-- cmdline autocompletion
 cmp.setup.cmdline(':', {
   mapping = cmp.mapping.preset.cmdline(),
   sources = cmp.config.sources({
@@ -345,7 +412,4 @@ vim.api.nvim_create_autocmd('Filetype', {
 -------------------------------------------------------------------------------
 
 -- auto-format
-vim.api.nvim_create_autocmd('BufWritePre', {
-  pattern = '*',
-  command = [[lua vim.lsp.buf.format()]]
-})
+vim.api.nvim_create_user_command('Fmt', [[lua vim.lsp.buf.format()]], {})
