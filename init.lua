@@ -2,21 +2,24 @@
 -- Author: AlexanderRichey (alrichey@)
 
 
--- Packer
--------------------------------------------------------------------------------
-
--- Install Packer:
---
---   git clone --depth 1 https://github.com/wbthomason/packer.nvim\
---     ~/.local/share/nvim/site/pack/packer/start/packer.nvim
---
-
-
 -- Plugins
 -------------------------------------------------------------------------------
 
 require('packer').startup(function()
   use 'wbthomason/packer.nvim'
+
+  -- use {
+  --   'github/copilot.vim',
+  --   config = function()
+  --     vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', {
+  --       silent = true,
+  --       script = true,
+  --       expr = true
+  --     })
+
+  --     vim.g.copilot_no_tab_map = true
+  --   end
+  -- }
 
   -- file browser
   use 'tpope/vim-vinegar'
@@ -55,7 +58,7 @@ require('packer').startup(function()
   use {
     'nvim-telescope/telescope.nvim',
     requires = {
-      { 'nvim-lua/popup.nvim' }, -- lua-based pop window
+      { 'nvim-lua/popup.nvim' },  -- lua-based pop window
       { 'nvim-lua/plenary.nvim' } -- lua functions, dependency of many plugins
     },
     config = function()
@@ -63,8 +66,7 @@ require('packer').startup(function()
         defaults = {
           file_ignore_patterns = {
             "node_modules",
-            "build",
-            "public",
+            "^build$",
             "tmp",
             "lang",
           },
@@ -72,10 +74,16 @@ require('packer').startup(function()
       }
 
       -- Map find_files to ctrl-p
-      vim.api.nvim_set_keymap('n', "<C-p>", "<cmd>Telescope find_files<cr>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', "<C-p>", "<cmd>Telescope find_files<cr>", {
+        noremap = true,
+        silent = true
+      })
 
       -- Map live_grep to \-f
-      vim.api.nvim_set_keymap('n', "<leader>f", "<cmd>Telescope live_grep<cr>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', "<leader>f", "<cmd>Telescope live_grep<cr>", {
+        noremap = true,
+        silent = true
+      })
     end
   }
 
@@ -113,21 +121,21 @@ require('packer').startup(function()
     branch = 'v1.x',
     requires = {
       -- LSP Support
-      { 'neovim/nvim-lspconfig' }, -- Required
-      { 'williamboman/mason.nvim' }, -- Optional
+      { 'neovim/nvim-lspconfig' },             -- Required
+      { 'williamboman/mason.nvim' },           -- Optional
       { 'williamboman/mason-lspconfig.nvim' }, -- Optional
 
       -- Autocompletion
-      { 'hrsh7th/nvim-cmp' }, -- Required
-      { 'hrsh7th/cmp-nvim-lsp' }, -- Required
-      { 'hrsh7th/cmp-buffer' }, -- Optional
-      { 'hrsh7th/cmp-path' }, -- Optional
-      { 'hrsh7th/cmp-cmdline' }, -- Optional
+      { 'hrsh7th/nvim-cmp' },         -- Required
+      { 'hrsh7th/cmp-nvim-lsp' },     -- Required
+      { 'hrsh7th/cmp-buffer' },       -- Optional
+      { 'hrsh7th/cmp-path' },         -- Optional
+      { 'hrsh7th/cmp-cmdline' },      -- Optional
       { 'saadparwaiz1/cmp_luasnip' }, -- Optional
-      { 'hrsh7th/cmp-nvim-lua' }, -- Optional
+      { 'hrsh7th/cmp-nvim-lua' },     -- Optional
 
       -- Snippets
-      { 'L3MON4D3/LuaSnip' }, -- Required
+      { 'L3MON4D3/LuaSnip' },             -- Required
       { 'rafamadriz/friendly-snippets' }, -- Optional
     }
   }
@@ -167,6 +175,7 @@ require('packer').startup(function()
 
   -- prose mode
   use 'reedes/vim-pencil'
+  use 'junegunn/goyo.vim'
 end)
 
 
@@ -272,8 +281,17 @@ require 'lualine'.setup {
 local lsp = require('lsp-zero')
 lsp.preset('recommended')
 
--- smarter autocompletion in init.lua
-lsp.nvim_workspace()
+-- no globals warnings when editing init.lua
+lsp.configure('lua_ls', {
+  settings = {
+    Lua = {
+      diagnostics = {
+        -- Get the language server to recognize the `vim` global
+        globals = { 'vim', 'use' }
+      }
+    }
+  }
+})
 
 -- prevent overriting defult tmux behavior
 lsp.set_preferences({
@@ -319,7 +337,6 @@ if file then
   file:close()
 end
 
-
 -- Language Overrides
 -------------------------------------------------------------------------------
 
@@ -341,11 +358,29 @@ vim.api.nvim_create_autocmd('Filetype', {
   command = [[setlocal shiftwidth=6 tabstop=6 noexpandtab autoindent]]
 })
 
+
 -- Linting
 -------------------------------------------------------------------------------
 
 -- auto-format
-vim.api.nvim_create_autocmd('BufWritePre', {
-  pattern = '*',
-  command = [[lua vim.lsp.buf.format()]]
-})
+-- vim.api.nvim_create_autocmd('BufWritePre', {
+--   pattern = '*',
+--   command = [[lua vim.lsp.buf.format()]]
+-- })
+
+
+-- Prose Mode
+-------------------------------------------------------------------------------
+
+vim.api.nvim_create_user_command('Prose', [[
+  :set nocursorline
+  :set spell
+  :Goyo
+  :PencilSoft
+  :set conceallevel=0
+  lua require('lualine').hide()
+  require('cmp').setup({ enabled = false })]], {})
+
+vim.api.nvim_create_user_command('ProseLight', [[
+  :set background=light
+  :Prose]], {})
