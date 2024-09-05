@@ -104,6 +104,7 @@ BIN_PATHS=(
   "/usr/local/go/bin"
   "$HOME/.yarn/bin"
   "$HOME/.toolbox/bin"
+  "$HOME/.cargo/bin"
 )
 
 for p in "${BIN_PATHS[@]}"; do
