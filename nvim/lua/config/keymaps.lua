@@ -3,10 +3,10 @@
 -- Add any additional keymaps here
 
 -- Map find_files to ctrl-p
-vim.keymap.set("n", "<C-p>", "<cmd>Telescope find_files<cr>", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-p>", "<cmd>lua Snacks.picker.files()<cr>", { noremap = true, silent = true })
 
 -- Map live_grep to \-f
-vim.keymap.set("n", "<localleader>f", "<cmd>Telescope live_grep<cr>", { noremap = true, silent = true })
+vim.keymap.set("n", "<localleader>f", "<cmd>lua Snacks.picker.grep()<cr>", { noremap = true, silent = true })
 
 -- Tmux
 vim.keymap.set("n", "<C-h>", "<cmd>NvimTmuxNavigateLeft<cr>", { noremap = true, silent = true })
