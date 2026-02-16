@@ -8,6 +8,9 @@ return {
     },
   },
 
+  -- Languages
+  { "jasdel/vim-smithy" },
+
   -- Essentials
   { "tpope/vim-vinegar" },
   { "tpope/vim-surround" },
@@ -15,21 +18,11 @@ return {
   -- Tmux
   {
     "alexghergh/nvim-tmux-navigation",
-    config = function ()
-      require("nvim-tmux-navigation").setup({})
-    end
-  },
-
-  -- MultiCursor
-  {
-    "mg979/vim-visual-multi",
-    branch = "master",
     config = function()
-      vim.g.VM_maps = {
-        -- disable backspace mapping to prevent conflict with autopairs
-        ["I BS"] = '',
-      }
-    end
+      require("nvim-tmux-navigation").setup({
+        disable_when_zoomed = true,
+      })
+    end,
   },
 
   -- Tab through autocomplete suggestions
