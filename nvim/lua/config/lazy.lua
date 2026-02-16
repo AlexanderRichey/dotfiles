@@ -76,6 +76,12 @@ vim.api.nvim_create_autocmd('Filetype', {
   command = [[setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab autoindent]]
 })
 
+-- java
+vim.api.nvim_create_autocmd('Filetype', {
+  pattern = 'java',
+  command = [[setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab autoindent]]
+})
+
 -- python
 vim.api.nvim_create_autocmd('Filetype', {
   pattern = 'python',
